@@ -1,0 +1,59 @@
+/*
+ * Regexive Sintactico
+ * Isaac
+ */
+
+package Analizador;
+import java_cup.runtime.*;
+
+parser code 
+{:
+    /**
+     * Método al que se llama automáticamente ante algún error sintactico.
+     **/ 
+    public void syntax_error(Symbol s){ 
+        System.out.println("Error Sintáctico en la Línea " + (s.left) +
+        " Columna "+s.right+ ". No se esperaba este componente: " +s.value+"."); 
+    } 
+
+    /**
+     * Método al que se llama automáticamente ante algún error sintáctico 
+     * en el que ya no es posible una recuperación de errores.
+     **/ 
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+        System.out.println("Error síntactico irrecuperable en la Línea " + 
+        (s.left)+ " Columna "+s.right+". Componente " + s.value + 
+        " no reconocido."); 
+    }  
+:} 
+
+terminal String LETRA,DIGITO,ASIGNARFLECHA;
+terminal String LLAVEABRIR,LLAVECERRAR,CONJUNTOGUION,CONJUNTOCOMA;
+terminal String RCONJUNTO;
+terminal String PORCENTAJES;
+terminal String CONCATENACION,DISYUNCION,CEROMASVECES,UNAMASVECES,CEROUNAVEZ, ESPECIAL;
+
+terminal String PUNTOCOMA,DOSPUNTOS;
+terminal String ID,CMULTILINEA,CUNILINEA, BLANCOS;
+
+non terminal ini;
+non terminal instrucciones;
+non terminal instruccion;
+
+start with ini;
+
+ini::= instrucciones;
+
+instrucciones ::= instruccion:a instrucciones {:System.out.println("El valor de la expresión es: "+a);:}
+ | instruccion:a 
+ | error instrucciones
+;
+
+instruccion ::=
+   CMULTILINEA:a  {:RESULT=a;:}
+|  PORCENTAJES:a {:RESULT=a;:}
+|  CUNILINEA:a {:RESULT=a;:}
+|  ID:a {:RESULT=a;:}
+|  RCONJUNTO:a {:RESULT=a;:}
+|  ASIGNARFLECHA:a {:RESULT=a;:}
+;

@@ -1,0 +1,82 @@
+/*
+* JFLEX
+* Isaac Xicol
+*/
+
+package Analizador;
+import java_cup.runtime.Symbol;
+
+%%
+%class Lexico
+%public
+%line
+%char
+%cup
+%unicode
+%ignorecase
+
+%init{
+    yyline = 1;
+    yychar = 1;
+%init}
+
+L = [A-Za-zÑñ]
+D = [0-9]
+GUIONES = _|-
+BLANCOS = [ \r\t]+
+
+COMENTARIO_MULTILINEA = \<\!(.*|\n|{BLANCOS})*\!\>
+COMENTARIO_UNILINEA = \/\/.*
+ID = {L}({D}|{L}|{GUIONES})*
+
+%%
+
+<YYINITIAL>{
+
+    "%%" {return new Symbol(sym.PORCENTAJES,yyline,yychar, yytext());}
+    "."  {return new Symbol(sym.CONCATENACION, yyline,yychar, yytext());}
+    "|"  {return new Symbol(sym.DISYUNCION, yyline, yychar, yytext());}
+    "*"  {return new Symbol(sym.CEROMASVECES, yyline, yychar, yytext());}
+    "+"  {return new Symbol(sym.UNAMASVECES, yyline, yychar, yytext());}
+    "?"  {return new Symbol(sym.CEROUNAVEZ,yyline,yychar, yytext());}
+    "&"  {return new Symbol(sym.ESPECIAL,yyline,yychar, yytext());}
+    "CONJ" {return new Symbol(sym.RCONJUNTO, yyline, yychar, yytext());}
+    "{" {return new Symbol(sym.LLAVEABRIR, yyline, yychar, yytext());}
+    "}" {return new Symbol(sym.LLAVECERRAR, yyline, yychar, yytext());}
+    "~" {return new Symbol(sym.CONJUNTOGUION, yyline, yychar, yytext());}
+    "," {return new Symbol(sym.CONJUNTOCOMA, yyline, yychar, yytext());}
+    ";" {return new Symbol(sym.PUNTOCOMA, yyline, yychar, yytext());}
+    ":" {return new Symbol(sym.DOSPUNTOS, yyline, yychar, yytext());}
+    "->" {
+        System.out.println("Esta es un aprueba: " + yytext() + ", T: " + sym.terminalNames[4]);
+        return new Symbol(sym.ASIGNARFLECHA, yyline, yychar, yytext());}
+    
+    \n {yychar=1;}
+
+    {BLANCOS} {}
+
+    {L} {
+        return new Symbol(sym.LETRA, yyline, yychar, yytext());
+    }
+    
+    {D} {
+        return new Symbol(sym.DIGITO, yyline, yychar, yytext());
+    }
+
+    {COMENTARIO_MULTILINEA} {
+        return new Symbol(sym.CMULTILINEA, yyline, yychar, yytext());
+    }
+
+    {COMENTARIO_UNILINEA} {
+        return new Symbol(sym.CUNILINEA, yyline, yychar, yytext());
+    }
+
+    {ID} {
+        return new Symbol(sym.ID, yyline, yychar, yytext());
+    }
+
+    . {
+        System.out.println("Este es un error lexico: "+yytext()+", en la linea: "+yyline+", en la columna: "+yychar);
+    }
+    
+}
