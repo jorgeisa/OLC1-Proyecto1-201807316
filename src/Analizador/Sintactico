@@ -27,33 +27,38 @@ parser code
     }  
 :} 
 
-terminal String LETRA,DIGITO,ASIGNARFLECHA;
-terminal String LLAVEABRIR,LLAVECERRAR,CONJUNTOGUION,CONJUNTOCOMA;
-terminal String RCONJUNTO;
-terminal String PORCENTAJES;
-terminal String CONCATENACION,DISYUNCION,CEROMASVECES,UNAMASVECES,CEROUNAVEZ, ESPECIAL;
 
-terminal String PUNTOCOMA,DOSPUNTOS;
-terminal String ID,CMULTILINEA,CUNILINEA, BLANCOS;
+terminal String PORCENTAJES, ;
+terminal String CONCATENACION, DISYUNCION, CEROMASVECES, UNAMASVECES, CEROUNAVEZ;
+terminal String ESPECIAL, RCONJUNTO, LLAVEABRIR, LLAVECERRAR, CONJUNTOGUION, CONJUNTOCOMA;
+terminal String PUNTOCOMA, DOSPUNTOS, FLECHAASIGNAR;
+
+terminal String LETRA, DIGITO, CMULTILINEA, CUNILINEA, ID, 
 
 non terminal ini;
-non terminal instrucciones;
-non terminal instruccion;
+non terminal instruccionInicial;
+non terminal bloqueUno;
+non terminal bloqueDos;
+non terminal instruccionBUno;
+non terminal conjunto;
+non terminal expresionreg;
+non terminal usoconjunto;
 
 start with ini;
 
-ini::= instrucciones;
+ini::= instruccionInicial;
 
-instrucciones ::= instruccion:a instrucciones {:System.out.println("El valor de la expresión es: "+a);:}
- | instruccion:a 
- | error instrucciones
+instruccionInicial ::= LLAVEABRIR bloqueUno PORCENTAJES PORCENTAJES bloqueDos LLAVECERRAR
+ | error instruccionInicial
 ;
 
-instruccion ::=
-   CMULTILINEA:a  {:RESULT=a;:}
-|  PORCENTAJES:a {:RESULT=a;:}
-|  CUNILINEA:a {:RESULT=a;:}
-|  ID:a {:RESULT=a;:}
-|  RCONJUNTO:a {:RESULT=a;:}
-|  ASIGNARFLECHA:a {:RESULT=a;:}
+bloqueUno ::= bloqueUno instruccionBUno 
+ | bloqueUno
 ;
+
+instruccionBUno ::=
+   conjunto
+
+conjunto ::= 
+
+

@@ -47,9 +47,7 @@ ID = {L}({D}|{L}|{GUIONES})*
     "," {return new Symbol(sym.CONJUNTOCOMA, yyline, yychar, yytext());}
     ";" {return new Symbol(sym.PUNTOCOMA, yyline, yychar, yytext());}
     ":" {return new Symbol(sym.DOSPUNTOS, yyline, yychar, yytext());}
-    "->" {
-        System.out.println("Esta es un aprueba: " + yytext() + ", T: " + sym.terminalNames[4]);
-        return new Symbol(sym.ASIGNARFLECHA, yyline, yychar, yytext());}
+    "->" {return new Symbol(sym.FLECHAASIGNAR, yyline, yychar, yytext());}
     
     \n {yychar=1;}
 
