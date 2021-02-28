@@ -9,6 +9,7 @@ package Analizador;
 public class sym {
   /* terminals */
   public static final int RCONJUNTO = 9;
+  public static final int CADENA = 22;
   public static final int CONCATENACION = 3;
   public static final int DOSPUNTOS = 15;
   public static final int CONJUNTOGUION = 12;
@@ -52,7 +53,8 @@ public class sym {
   "DIGITO",
   "CMULTILINEA",
   "CUNILINEA",
-  "ID"
+  "ID",
+  "CADENA"
   };
 }
 

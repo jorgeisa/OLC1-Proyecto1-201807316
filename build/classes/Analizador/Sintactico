@@ -33,20 +33,23 @@ terminal String CONCATENACION,DISYUNCION,CEROMASVECES,UNAMASVECES,CEROUNAVEZ;
 terminal String ESPECIAL,RCONJUNTO,LLAVEABRIR,LLAVECERRAR,CONJUNTOGUION,CONJUNTOCOMA;
 terminal String PUNTOCOMA,DOSPUNTOS,FLECHAASIGNAR;
 
-terminal String LETRA,DIGITO,CMULTILINEA,CUNILINEA,ID;
+terminal String LETRA,DIGITO,CMULTILINEA,CUNILINEA,ID, CADENA;
 
 non terminal ini;
 non terminal instruccionInicial;
-non terminal bloqueUno;
-non terminal bloqueDos;
-non terminal instruccionBUno;
 
+non terminal bloqueUno;
+non terminal instruccionBUno;
 non terminal conjunto;
 non terminal notacionConjunto;
+non terminal conjuntoEr;
+non terminal notacionEr;
+non terminal erDoble;
+non terminal erSimple;
+non terminal erTerminal;
 
-non terminal expresionreg;
-
-non terminal usoconjunto;
+non terminal bloqueDos;
+non terminal instruccionBDos;
 
 precedence left CONJUNTOGUION,CONJUNTOCOMA;
 
@@ -54,8 +57,8 @@ start with ini;
 
 ini::= instruccionInicial;
 
-instruccionInicial::=LLAVEABRIR bloqueUno PORCENTAJES PORCENTAJES LLAVECERRAR
- | error instruccionInicial
+instruccionInicial::= LLAVEABRIR bloqueUno PORCENTAJES PORCENTAJES bloqueDos LLAVECERRAR
+| error instruccionInicial
 ;
 
 bloqueUno::=instruccionBUno bloqueUno 
@@ -64,15 +67,47 @@ bloqueUno::=instruccionBUno bloqueUno
 ;
 
 instruccionBUno ::= conjunto 
- | CMULTILINEA
- | CUNILINEA
+ | conjuntoEr
+ | CMULTILINEA:a {:System.out.println("El valor de la expresión es: "+a);:}
+ | CUNILINEA:a {:System.out.println("El valor de la expresión es: "+a);:}
 ;
 
-conjunto ::= RCONJUNTO DOSPUNTOS ID FLECHAASIGNAR notacionConjunto PUNTOCOMA
+conjunto ::= RCONJUNTO DOSPUNTOS ID FLECHAASIGNAR:b notacionConjunto:a PUNTOCOMA:c {:System.out.println("El valor de la expresión es: "+b+" " + a + " "+c);:}
 ;
 
-notacionConjunto ::= notacionConjunto CONJUNTOGUION notacionConjunto 
- | notacionConjunto CONJUNTOCOMA notacionConjunto
- | DIGITO
- | LETRA
+notacionConjunto ::= notacionConjunto:a CONJUNTOGUION notacionConjunto:b {:RESULT=a + "~" + b;:}
+ | notacionConjunto:a CONJUNTOCOMA notacionConjunto:b {:RESULT=a + "," + b;:}
+ | DIGITO:a {:RESULT=new String(a);:}
+ | LETRA:a {:RESULT=new String(a);:}
+;
+
+conjuntoEr ::= ID:a FLECHAASIGNAR:b notacionEr:c PUNTOCOMA:d {:System.out.println("El valor de la expresion es: "+a+" "+b+" "+c+" "+d);:}
+;
+
+notacionEr::= erDoble:a {:RESULT=a;:}
+| erSimple:a {:RESULT=a;:}
+; 
+
+erDoble::= CONCATENACION:a erTerminal:b erTerminal:c {:RESULT=a+b+c;:}
+ | DISYUNCION:a erTerminal:b erTerminal:c {:RESULT=a+b+c;:}
+;
+
+erSimple::= CEROMASVECES:a erTerminal:b {:RESULT=a+b;:}
+| UNAMASVECES:a erTerminal:b {:RESULT=a+b;:}
+| CEROUNAVEZ:a erTerminal:b {:RESULT=a+b;:}
+;
+
+erTerminal::= LLAVEABRIR:a ID:b LLAVECERRAR:c {:RESULT=a+b+c;:}
+| CADENA:a {:RESULT=a;:}
+| notacionEr:a {:RESULT=a;:}
+;
+
+bloqueDos::=instruccionBDos bloqueDos 
+ | instruccionBDos
+ | error bloqueDos
+;
+
+instruccionBDos::= ID:a DOSPUNTOS:b CADENA:c PUNTOCOMA:d {:System.out.println("El valor de la expresión es: "+a+b+c+d);:}
+ | CMULTILINEA:a {:System.out.println("El valor de la expresión es: "+a);:}
+ | CUNILINEA:a {:System.out.println("El valor de la expresión es: "+a);:}
 ;

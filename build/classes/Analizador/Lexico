@@ -28,6 +28,7 @@ BLANCOS = [ \r\t]+
 COMENTARIO_MULTILINEA = \<\!(.*|\n|{BLANCOS})*\!\>
 COMENTARIO_UNILINEA = \/\/.*
 ID = {L}({D}|{L}|{GUIONES})*
+CADENA = \".*\"
 
 %%
 
@@ -70,6 +71,10 @@ ID = {L}({D}|{L}|{GUIONES})*
 
     {ID} {
         return new Symbol(sym.ID, yyline, yychar, yytext());
+    }
+
+    {CADENA} {
+        return new Symbol(sym.CADENA, yyline, yychar, yytext());
     }
 
     . {
