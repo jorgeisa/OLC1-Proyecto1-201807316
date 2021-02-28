@@ -723,8 +723,7 @@ public class Lexico implements java_cup.runtime.Scanner {
             // fall through
           case 41: break;
           case 19: 
-            { System.out.println("Esta es un aprueba: " + yytext() + ", T: " + sym.terminalNames[4]);
-        return new Symbol(sym.ASIGNARFLECHA, yyline, yychar, yytext());
+            { return new Symbol(sym.FLECHAASIGNAR, yyline, yychar, yytext());
             } 
             // fall through
           case 42: break;

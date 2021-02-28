@@ -9,39 +9,30 @@ package Analizador;
 public class sym {
   /* terminals */
   public static final int RCONJUNTO = 9;
-  public static final int DOSPUNTOS = 18;
-  public static final int CONCATENACION = 11;
-  public static final int CONJUNTOGUION = 7;
-  public static final int LETRA = 2;
-  public static final int LLAVEABRIR = 5;
-  public static final int BLANCOS = 22;
-  public static final int ID = 19;
-  public static final int CUNILINEA = 21;
-  public static final int CMULTILINEA = 20;
-  public static final int CONJUNTOCOMA = 8;
+  public static final int CONCATENACION = 3;
+  public static final int DOSPUNTOS = 15;
+  public static final int CONJUNTOGUION = 12;
+  public static final int LETRA = 17;
+  public static final int FLECHAASIGNAR = 16;
+  public static final int LLAVEABRIR = 10;
+  public static final int ID = 21;
+  public static final int CUNILINEA = 20;
+  public static final int CMULTILINEA = 19;
+  public static final int CONJUNTOCOMA = 13;
   public static final int EOF = 0;
-  public static final int DIGITO = 3;
-  public static final int UNAMASVECES = 14;
-  public static final int DISYUNCION = 12;
-  public static final int CEROUNAVEZ = 15;
+  public static final int DIGITO = 18;
+  public static final int UNAMASVECES = 6;
+  public static final int DISYUNCION = 4;
+  public static final int CEROUNAVEZ = 7;
   public static final int error = 1;
-  public static final int ESPECIAL = 16;
-  public static final int ASIGNARFLECHA = 4;
-  public static final int PUNTOCOMA = 17;
-  public static final int CEROMASVECES = 13;
-  public static final int LLAVECERRAR = 6;
-  public static final int PORCENTAJES = 10;
+  public static final int ESPECIAL = 8;
+  public static final int PUNTOCOMA = 14;
+  public static final int CEROMASVECES = 5;
+  public static final int LLAVECERRAR = 11;
+  public static final int PORCENTAJES = 2;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
-  "LETRA",
-  "DIGITO",
-  "ASIGNARFLECHA",
-  "LLAVEABRIR",
-  "LLAVECERRAR",
-  "CONJUNTOGUION",
-  "CONJUNTOCOMA",
-  "RCONJUNTO",
   "PORCENTAJES",
   "CONCATENACION",
   "DISYUNCION",
@@ -49,12 +40,19 @@ public class sym {
   "UNAMASVECES",
   "CEROUNAVEZ",
   "ESPECIAL",
+  "RCONJUNTO",
+  "LLAVEABRIR",
+  "LLAVECERRAR",
+  "CONJUNTOGUION",
+  "CONJUNTOCOMA",
   "PUNTOCOMA",
   "DOSPUNTOS",
-  "ID",
+  "FLECHAASIGNAR",
+  "LETRA",
+  "DIGITO",
   "CMULTILINEA",
   "CUNILINEA",
-  "BLANCOS"
+  "ID"
   };
 }
 

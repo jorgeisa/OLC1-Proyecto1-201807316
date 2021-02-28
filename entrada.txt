@@ -1,10 +1,10 @@
+{
+////// CONJUNTOS
+CONJ: letra -> a~z;
+CONJ: digito -> 0~9;
+
+//////// EXPRESIONES REGULARES
+
 %%
-%% 
-CONJ
 %%
-//comentario
-<!comentario unilinea!"%·"$%·&·$%&·%$/·%&/$&($&/(%&/(!asdf!>
-id_prueba
-id-prueba
-->
-->
+}

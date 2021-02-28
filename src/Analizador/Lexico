@@ -32,7 +32,6 @@ ID = {L}({D}|{L}|{GUIONES})*
 %%
 
 <YYINITIAL>{
-
     "%%" {return new Symbol(sym.PORCENTAJES,yyline,yychar, yytext());}
     "."  {return new Symbol(sym.CONCATENACION, yyline,yychar, yytext());}
     "|"  {return new Symbol(sym.DISYUNCION, yyline, yychar, yytext());}
@@ -56,7 +55,7 @@ ID = {L}({D}|{L}|{GUIONES})*
     {L} {
         return new Symbol(sym.LETRA, yyline, yychar, yytext());
     }
-    
+
     {D} {
         return new Symbol(sym.DIGITO, yyline, yychar, yytext());
     }
@@ -76,5 +75,4 @@ ID = {L}({D}|{L}|{GUIONES})*
     . {
         System.out.println("Este es un error lexico: "+yytext()+", en la linea: "+yyline+", en la columna: "+yychar);
     }
-    
 }

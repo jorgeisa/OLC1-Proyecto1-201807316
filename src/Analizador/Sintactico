@@ -28,37 +28,51 @@ parser code
 :} 
 
 
-terminal String PORCENTAJES, ;
-terminal String CONCATENACION, DISYUNCION, CEROMASVECES, UNAMASVECES, CEROUNAVEZ;
-terminal String ESPECIAL, RCONJUNTO, LLAVEABRIR, LLAVECERRAR, CONJUNTOGUION, CONJUNTOCOMA;
-terminal String PUNTOCOMA, DOSPUNTOS, FLECHAASIGNAR;
+terminal String PORCENTAJES;
+terminal String CONCATENACION,DISYUNCION,CEROMASVECES,UNAMASVECES,CEROUNAVEZ;
+terminal String ESPECIAL,RCONJUNTO,LLAVEABRIR,LLAVECERRAR,CONJUNTOGUION,CONJUNTOCOMA;
+terminal String PUNTOCOMA,DOSPUNTOS,FLECHAASIGNAR;
 
-terminal String LETRA, DIGITO, CMULTILINEA, CUNILINEA, ID, 
+terminal String LETRA,DIGITO,CMULTILINEA,CUNILINEA,ID;
 
 non terminal ini;
 non terminal instruccionInicial;
 non terminal bloqueUno;
 non terminal bloqueDos;
 non terminal instruccionBUno;
+
 non terminal conjunto;
+non terminal notacionConjunto;
+
 non terminal expresionreg;
+
 non terminal usoconjunto;
+
+precedence left CONJUNTOGUION,CONJUNTOCOMA;
 
 start with ini;
 
 ini::= instruccionInicial;
 
-instruccionInicial ::= LLAVEABRIR bloqueUno PORCENTAJES PORCENTAJES bloqueDos LLAVECERRAR
+instruccionInicial::=LLAVEABRIR bloqueUno PORCENTAJES PORCENTAJES LLAVECERRAR
  | error instruccionInicial
 ;
 
-bloqueUno ::= bloqueUno instruccionBUno 
- | bloqueUno
+bloqueUno::=instruccionBUno bloqueUno 
+ | instruccionBUno
+ | error bloqueUno
 ;
 
-instruccionBUno ::=
-   conjunto
+instruccionBUno ::= conjunto 
+ | CMULTILINEA
+ | CUNILINEA
+;
 
-conjunto ::= 
+conjunto ::= RCONJUNTO DOSPUNTOS ID FLECHAASIGNAR notacionConjunto PUNTOCOMA
+;
 
-
+notacionConjunto ::= notacionConjunto CONJUNTOGUION notacionConjunto 
+ | notacionConjunto CONJUNTOCOMA notacionConjunto
+ | DIGITO
+ | LETRA
+;
