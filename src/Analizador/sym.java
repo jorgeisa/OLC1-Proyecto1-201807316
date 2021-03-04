@@ -8,39 +8,42 @@ package Analizador;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int RCONJUNTO = 9;
-  public static final int CADENA = 22;
-  public static final int CONCATENACION = 3;
-  public static final int DOSPUNTOS = 15;
-  public static final int CONJUNTOGUION = 12;
-  public static final int LETRA = 17;
-  public static final int FLECHAASIGNAR = 16;
-  public static final int LLAVEABRIR = 10;
-  public static final int ID = 21;
-  public static final int CUNILINEA = 20;
-  public static final int CMULTILINEA = 19;
-  public static final int CONJUNTOCOMA = 13;
+  public static final int RCONJUNTO = 11;
+  public static final int CADENA = 23;
+  public static final int DOSPUNTOS = 17;
+  public static final int CONCATENACION = 6;
+  public static final int CONJUNTOGUION = 14;
+  public static final int LETRA = 19;
+  public static final int FLECHAASIGNAR = 18;
+  public static final int LLAVEABRIR = 12;
+  public static final int ID = 22;
+  public static final int CONJUNTOCOMA = 15;
+  public static final int COMILLASIMPLE = 4;
   public static final int EOF = 0;
-  public static final int DIGITO = 18;
-  public static final int UNAMASVECES = 6;
-  public static final int DISYUNCION = 4;
-  public static final int CEROUNAVEZ = 7;
+  public static final int DIGITO = 20;
+  public static final int UNAMASVECES = 9;
+  public static final int DISYUNCION = 7;
+  public static final int COMILLADOBLE = 5;
+  public static final int CEROUNAVEZ = 10;
   public static final int error = 1;
-  public static final int ESPECIAL = 8;
-  public static final int PUNTOCOMA = 14;
-  public static final int CEROMASVECES = 5;
-  public static final int LLAVECERRAR = 11;
+  public static final int SALTOLINEA = 3;
+  public static final int PUNTOCOMA = 16;
+  public static final int CEROMASVECES = 8;
+  public static final int LLAVECERRAR = 13;
+  public static final int ASCIIS = 21;
   public static final int PORCENTAJES = 2;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
   "PORCENTAJES",
+  "SALTOLINEA",
+  "COMILLASIMPLE",
+  "COMILLADOBLE",
   "CONCATENACION",
   "DISYUNCION",
   "CEROMASVECES",
   "UNAMASVECES",
   "CEROUNAVEZ",
-  "ESPECIAL",
   "RCONJUNTO",
   "LLAVEABRIR",
   "LLAVECERRAR",
@@ -51,8 +54,7 @@ public class sym {
   "FLECHAASIGNAR",
   "LETRA",
   "DIGITO",
-  "CMULTILINEA",
-  "CUNILINEA",
+  "ASCIIS",
   "ID",
   "CADENA"
   };

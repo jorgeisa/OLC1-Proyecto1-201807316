@@ -1,0 +1,8 @@
+{
+igusername -> .."@"|{minus}{mayus}*|||{minus}{mayus}{num}"_"; 
+%%
+%%
+igusername : "@yAsaLioComPI_1"; 
+fecha : "15/03/2021"; 
+erAzar: "hola#Mundo";
+}

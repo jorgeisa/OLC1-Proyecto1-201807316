@@ -20,7 +20,7 @@ public class RegexiveOLC1 {
     public static void main(String[] args) {
         // TODO code application logic here
         System.out.println("Hola esto es regexive");
-        interpretar("entrada.txt");
+        interpretar("Entrada3M.txt");
     }
     
     private static void interpretar(String path) {

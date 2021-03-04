@@ -16,30 +16,37 @@ import java_cup.runtime.Symbol;
 %ignorecase
 
 %init{
+    StringBuffer string = new StringBuffer();
     yyline = 1;
     yychar = 1;
 %init}
 
+%{
+    StringBuffer string = new StringBuffer();
+%}
+
 L = [A-Za-zÑñ]
 D = [0-9]
 GUIONES = _|-
-BLANCOS = [ \r\t]+
+BLANCOS = [ \r\t]*
+ASCII = [!#-&(-/:-@\[\]-`{-}]
+FINLINEA = \n
 
-COMENTARIO_MULTILINEA = \<\!(.*|\n|{BLANCOS})*\!\>
-COMENTARIO_UNILINEA = \/\/.*
+COMENTARIO_MULTILINEA = "<!"(.*|\n|{BLANCOS})*"!>"
+COMENTARIO_UNILINEA = "//".*{FINLINEA}?
 ID = {L}({D}|{L}|{GUIONES})*
-CADENA = \".*\"
+FLECHA = "-"{BLANCOS}">"
+
+%state CADENA
 
 %%
 
 <YYINITIAL>{
-    "%%" {return new Symbol(sym.PORCENTAJES,yyline,yychar, yytext());}
-    "."  {return new Symbol(sym.CONCATENACION, yyline,yychar, yytext());}
+    "."  {return new Symbol(sym.CONCATENACION, yyline, yychar, yytext());}
     "|"  {return new Symbol(sym.DISYUNCION, yyline, yychar, yytext());}
     "*"  {return new Symbol(sym.CEROMASVECES, yyline, yychar, yytext());}
     "+"  {return new Symbol(sym.UNAMASVECES, yyline, yychar, yytext());}
     "?"  {return new Symbol(sym.CEROUNAVEZ,yyline,yychar, yytext());}
-    "&"  {return new Symbol(sym.ESPECIAL,yyline,yychar, yytext());}
     "CONJ" {return new Symbol(sym.RCONJUNTO, yyline, yychar, yytext());}
     "{" {return new Symbol(sym.LLAVEABRIR, yyline, yychar, yytext());}
     "}" {return new Symbol(sym.LLAVECERRAR, yyline, yychar, yytext());}
@@ -47,12 +54,23 @@ CADENA = \".*\"
     "," {return new Symbol(sym.CONJUNTOCOMA, yyline, yychar, yytext());}
     ";" {return new Symbol(sym.PUNTOCOMA, yyline, yychar, yytext());}
     ":" {return new Symbol(sym.DOSPUNTOS, yyline, yychar, yytext());}
-    "->" {return new Symbol(sym.FLECHAASIGNAR, yyline, yychar, yytext());}
-    
+    "%%" {return new Symbol(sym.PORCENTAJES,yyline, yychar,yytext());}
+    "\\n" {return new Symbol(sym.SALTOLINEA,yyline, yychar,yytext());}
+    "\\\'" {return new Symbol(sym.COMILLASIMPLE,yyline, yychar,yytext());}
+    "\\\"" {return new Symbol(sym.COMILLADOBLE,yyline, yychar,yytext());}
+
     \n {yychar=1;}
 
+    \" {yybegin(CADENA);}
+    
     {BLANCOS} {}
+    
+    {COMENTARIO_MULTILINEA} {}
 
+    {COMENTARIO_UNILINEA} {}
+
+    {FLECHA} {return new Symbol(sym.FLECHAASIGNAR, yyline, yychar, yytext());}
+    
     {L} {
         return new Symbol(sym.LETRA, yyline, yychar, yytext());
     }
@@ -61,23 +79,30 @@ CADENA = \".*\"
         return new Symbol(sym.DIGITO, yyline, yychar, yytext());
     }
 
-    {COMENTARIO_MULTILINEA} {
-        return new Symbol(sym.CMULTILINEA, yyline, yychar, yytext());
-    }
-
-    {COMENTARIO_UNILINEA} {
-        return new Symbol(sym.CUNILINEA, yyline, yychar, yytext());
+    {ASCII} {
+        return new Symbol(sym.ASCIIS, yyline, yychar, yytext());
     }
 
     {ID} {
         return new Symbol(sym.ID, yyline, yychar, yytext());
     }
 
-    {CADENA} {
-        return new Symbol(sym.CADENA, yyline, yychar, yytext());
-    }
-
     . {
+        
         System.out.println("Este es un error lexico: "+yytext()+", en la linea: "+yyline+", en la columna: "+yychar);
     }
+}
+
+<CADENA> {
+
+    \" {
+        yybegin(YYINITIAL);
+        return new Symbol(sym.CADENA, yyline, yychar, string.toString());
+       }
+
+    [^\n\r\"\\]+        {string.append(yytext());}
+    "\\\""                {string.append('\"');}
+    "\\\'"                {string.append('\'');}
+    "\\t"                 {string.append('\t');}
+    "\\\\"                  {string.append('\\');}
 }
