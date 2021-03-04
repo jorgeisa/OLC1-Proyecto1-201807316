@@ -7,6 +7,10 @@
 
 package Analizador;
 import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import Clases.Excepcion;
+import Clases.Enum;
+
 
 
 /**
@@ -262,6 +266,8 @@ public class Lexico implements java_cup.runtime.Scanner {
 
   /* user code: */
     StringBuffer string = new StringBuffer();
+    public ArrayList<Excepcion> Excepciones;
+    Enum enumError;
 
 
   /**
@@ -273,6 +279,7 @@ public class Lexico implements java_cup.runtime.Scanner {
       StringBuffer string = new StringBuffer();
     yyline = 1;
     yychar = 1;
+    Excepciones = new ArrayList();
     this.zzReader = in;
   }
 
@@ -654,7 +661,8 @@ public class Lexico implements java_cup.runtime.Scanner {
             // fall through
           case 32: break;
           case 2: 
-            { System.out.println("Este es un error lexico: "+yytext()+", en la linea: "+yyline+", en la columna: "+yychar);
+            { Excepciones.add(new Excepcion(enumError.LEXICO, "Caracter no valido, error lexico: "+ yytext(), yyline, yychar));
+        System.out.println("Este es un error lexico: "+yytext()+", en la linea: "+yyline+", en la columna: "+yychar);
             } 
             // fall through
           case 33: break;

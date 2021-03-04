@@ -5,6 +5,10 @@
  */
 package regexiveolc1;
 
+import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author Isaac
@@ -208,6 +212,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         System.out.println("Opcion abrir Archivo");
+        abrirArchivo();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -216,6 +221,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         System.out.println("Opcion Guardar como... Archivo");
+        guardarArchivoComo();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -255,6 +261,31 @@ public class Interfaz extends javax.swing.JFrame {
                 new Interfaz().setVisible(true);
             }
         });
+    }
+    
+    public void abrirArchivo(){
+        JFileChooser fc = new JFileChooser(); //Creamos un nuevo objeto JFileChooser
+        FileNameExtensionFilter archivoOlc = new FileNameExtensionFilter("Archivos .olc", "olc");
+        fc.setFileFilter(archivoOlc);
+        try {
+            int seleccion = fc.showOpenDialog(this); //Abrimos el JFileChooser y guardamos el resultado en seleccion
+            if (seleccion == JFileChooser.APPROVE_OPTION){ //Si el usuario ha pulsado la opción Aceptar
+                File fichero = fc.getSelectedFile(); //Guardamos en la variable fichero el archivo seleccionado
+                System.out.println("Se abrio el archivo.");
+            }else if(seleccion == JFileChooser.CANCEL_OPTION || seleccion == JFileChooser.ERROR_OPTION){
+                System.out.println("No se ha abierto el archivo.");
+            }
+        } catch (Exception e) {
+            System.out.println("Se ha producido un error!");
+        }
+    }
+    
+    public void guardarArchivoComo(){
+        JFileChooser fc = new JFileChooser(); //Creamos un nuevo objeto JFileChooser
+        fc.setApproveButtonText("Guardar");
+        fc.showSaveDialog(null);
+        System.out.println(fc.getSelectedFile());
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

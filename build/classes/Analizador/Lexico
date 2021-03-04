@@ -5,6 +5,10 @@
 
 package Analizador;
 import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import Clases.Excepcion;
+import Clases.Enum;
+
 
 %%
 %class Lexico
@@ -15,15 +19,20 @@ import java_cup.runtime.Symbol;
 %unicode
 %ignorecase
 
+%{
+    StringBuffer string = new StringBuffer();
+    public ArrayList<Excepcion> Excepciones;
+    Enum enumError;
+%}
+
 %init{
     StringBuffer string = new StringBuffer();
     yyline = 1;
     yychar = 1;
+    Excepciones = new ArrayList();
 %init}
 
-%{
-    StringBuffer string = new StringBuffer();
-%}
+
 
 L = [A-Za-zÑñ]
 D = [0-9]
@@ -88,7 +97,7 @@ FLECHA = "-"{BLANCOS}">"
     }
 
     . {
-        
+        Excepciones.add(new Excepcion(enumError.LEXICO, "Caracter no valido, error lexico: "+ yytext(), yyline, yychar));
         System.out.println("Este es un error lexico: "+yytext()+", en la linea: "+yyline+", en la columna: "+yychar);
     }
 }

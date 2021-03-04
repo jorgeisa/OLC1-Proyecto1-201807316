@@ -8,6 +8,8 @@ package regexiveolc1;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.StringReader;
+import Clases.Enum;
+import Clases.Excepcion;
 /**
  *
  * @author Isaac
@@ -20,6 +22,8 @@ public class RegexiveOLC1 {
     public static void main(String[] args) {
         // TODO code application logic here
         System.out.println("Hola esto es regexive");
+        //Excepcion exc = new Excepcion(Enum.LEXICO, "Error Lexico", 0, 0);
+        //System.out.println(exc.getTipo().ordinal());
         interpretar("Entrada3M.txt");
     }
     

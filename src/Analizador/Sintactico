@@ -5,13 +5,19 @@
 
 package Analizador;
 import java_cup.runtime.*;
+import java.util.ArrayList;
+import Clases.Excepcion;
+import Clases.Enum;
 
 parser code 
 {:
+    public ArrayList<Excepcion> Excepciones = new ArrayList();
+    Enum enumError;
     /**
      * Método al que se llama automáticamente ante algún error sintactico.
      **/ 
     public void syntax_error(Symbol s){ 
+        Excepciones.add(new Excepcion(enumError.SINTACTICO, "Caracter no valido, error sintactico: "+ s.value, s.left, s.right));
         System.out.println("Error Sintáctico en la Línea " + (s.left) +
         " Columna "+s.right+ ". No se esperaba este componente: " +s.value+"."); 
     } 

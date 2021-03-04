@@ -260,6 +260,9 @@ public class Lexico implements java_cup.runtime.Scanner {
    */
   private int zzFinalHighSurrogate = 0;
 
+  /* user code: */
+    StringBuffer string = new StringBuffer();
+
 
   /**
    * Creates a new scanner
