@@ -5,7 +5,11 @@
  */
 package regexiveolc1;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -35,7 +39,7 @@ public class Interfaz extends javax.swing.JFrame {
         jFrame1 = new javax.swing.JFrame();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jTextAreaArchivo = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -70,9 +74,9 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel1.setText("Archivo de Entrada:");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jTextAreaArchivo.setColumns(20);
+        jTextAreaArchivo.setRows(5);
+        jScrollPane1.setViewportView(jTextAreaArchivo);
 
         jButton1.setText("Automatas");
 
@@ -271,6 +275,20 @@ public class Interfaz extends javax.swing.JFrame {
             int seleccion = fc.showOpenDialog(this); //Abrimos el JFileChooser y guardamos el resultado en seleccion
             if (seleccion == JFileChooser.APPROVE_OPTION){ //Si el usuario ha pulsado la opción Aceptar
                 File fichero = fc.getSelectedFile(); //Guardamos en la variable fichero el archivo seleccionado
+                
+                // Obteniendo texto del fichero
+                if (fichero != null){
+                    String cadena; // cadena para obtener linea
+                    String cadenaArchivo=""; // cadena para concatenar el texto
+                    FileReader archivo = new FileReader(fichero);
+                    BufferedReader lee = new BufferedReader(archivo);
+                    while((cadena=lee.readLine())!=null){
+                        cadenaArchivo += cadena + "\n";
+                    }
+                    textoEnAreaDeArchivo(cadenaArchivo);
+                    archivo.close();
+                }
+                
                 System.out.println("Se abrio el archivo.");
             }else if(seleccion == JFileChooser.CANCEL_OPTION || seleccion == JFileChooser.ERROR_OPTION){
                 System.out.println("No se ha abierto el archivo.");
@@ -283,11 +301,32 @@ public class Interfaz extends javax.swing.JFrame {
     public void guardarArchivoComo(){
         JFileChooser fc = new JFileChooser(); //Creamos un nuevo objeto JFileChooser
         fc.setApproveButtonText("Guardar");
-        fc.showSaveDialog(null);
-        System.out.println(fc.getSelectedFile());
+        FileNameExtensionFilter archivoOlc = new FileNameExtensionFilter("Archivos .olc", "olc");
+        fc.setFileFilter(archivoOlc);
+        
+        try {
+            int seleccion = fc.showSaveDialog(null);
+            if (seleccion == JFileChooser.APPROVE_OPTION){ 
+                File archivo = new File(fc.getSelectedFile()+".olc");
+                BufferedWriter salida = new BufferedWriter(new FileWriter(archivo));
+                String textoEscritura = jTextAreaArchivo.getText();
+                
+                salida.write(textoEscritura);
+                salida.close();
+            }
+            System.out.println(fc.getSelectedFile());    
+            
+        } catch (Exception e) {
+        }
+        
         
     }
+   
 
+    public void textoEnAreaDeArchivo(String texto){
+        jTextAreaArchivo.setText("");
+        jTextAreaArchivo.setText(texto);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -306,8 +345,8 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextAreaArchivo;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }
