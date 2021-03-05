@@ -24,7 +24,7 @@ public class RegexiveOLC1 {
         System.out.println("Hola esto es regexive");
         //Excepcion exc = new Excepcion(Enum.LEXICO, "Error Lexico", 0, 0);
         //System.out.println(exc.getTipo().ordinal());
-        interpretar("Entrada3M.txt");
+        //interpretar("Entrada3M.txt");
     }
     
     private static void interpretar(String path) {
