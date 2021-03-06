@@ -12,5 +12,5 @@ RegEx3 -> . {digito} * | "_" | {letra} {digito};
 %%
 
 ExpReg1 : "primerLexemaCokoa";
-ExpresionReg2 : "34.44";
+ExpresionReg2:  "34.44";
 }

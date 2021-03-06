@@ -5,21 +5,32 @@
 
 package Analizador;
 import java_cup.runtime.*;
+
 import java.util.ArrayList;
 import Clases.Excepcion;
 import Clases.Enum;
+import Clases.NodoArbol;
+import Clases.Arbol;
+
+import java.util.HashMap;
+import java.util.Map;
 
 parser code 
 {:
     public ArrayList<Excepcion> Excepciones = new ArrayList();
+    public ArrayList<Arbol> Arboles = new ArrayList();
     Enum enumError;
+    int contadorNodos = 0;
+    int contadorNodosN = 9000;
+    public HashMap<Integer, ArrayList<NodoArbol>> hojas = new HashMap<>();
+
     /**
      * Método al que se llama automáticamente ante algún error sintactico.
      **/ 
     public void syntax_error(Symbol s){ 
         Excepciones.add(new Excepcion(enumError.SINTACTICO, "Caracter no valido, error sintactico: "+ s.value, s.left, s.right));
         System.out.println("Error Sintáctico en la Línea " + (s.left) +
-        " Columna "+s.right+ ". No se esperaba este componente: " +s.value+"."); 
+        " Columna "+s.right+ ". No se esperaba este componente: " +s.value+".");
     } 
 
     /**
@@ -49,8 +60,8 @@ non terminal bloqueUno;
 non terminal instruccionBUno;
 non terminal conjunto;
 non terminal notacionConjunto;
-non terminal conjuntoEr;
-non terminal notacionEr;
+non terminal Arbol conjuntoEr;
+non terminal NodoArbol notacionEr;
 /*non terminal erDoble;
 non terminal erSimple;
 non terminal erTerminal;*/
@@ -78,7 +89,7 @@ bloqueUno ::= instruccionBUno bloqueUno
 ;
 
 instruccionBUno ::= conjunto 
- | conjuntoEr
+ | conjuntoEr:a {:Arboles.add(a);:}
 ;
 
 conjunto ::= RCONJUNTO DOSPUNTOS ID FLECHAASIGNAR:b notacionConjunto:a PUNTOCOMA:c {:System.out.println("El valor de la expresión es: "+b+" " + a + " "+c);:}
@@ -91,19 +102,19 @@ notacionConjunto ::= notacionConjunto:a CONJUNTOGUION notacionConjunto:b {:RESUL
  | ASCIIS:a {:RESULT=new String(a);:}
 ;
 
-conjuntoEr ::= ID:a FLECHAASIGNAR:b notacionEr:c PUNTOCOMA:d {:System.out.println("El valor de la expresion es: "+a+" "+b+" "+c+" "+d);:}
+conjuntoEr ::= ID:a FLECHAASIGNAR:b notacionEr:c PUNTOCOMA:d {:contadorNodos++; RESULT= new Arbol(new NodoArbol(contadorNodosN, ".", new NodoArbol(contadorNodos, "º", hojas), c, hojas), a); hojas = new HashMap<>(); contadorNodos = 0; contadorNodosN=9000;:}
 ;
 
-notacionEr::= CONCATENACION:a notacionEr:b notacionEr:c {:RESULT=a+b+c;:}
- | DISYUNCION:a notacionEr:b notacionEr:c {:RESULT=a+b+c;:}
- | UNAMASVECES:a notacionEr:b {:RESULT=a+b;:}
- | CEROUNAVEZ:a notacionEr:b {:RESULT=a+b;:}
- | CEROMASVECES:a notacionEr:b {:RESULT=a+b;:}
- | CADENA:a {:RESULT=a;:}
- | LLAVEABRIR:a ID:b LLAVECERRAR:c {:RESULT=a+b+c;:}
- | SALTOLINEA:a {:RESULT=a;:}
- | COMILLASIMPLE:a {:RESULT=a;:}
- | COMILLADOBLE:a {:RESULT=a;:}
+notacionEr::= CONCATENACION:s notacionEr:a notacionEr:b {:RESULT= new NodoArbol(contadorNodosN, s, b, a, hojas); contadorNodosN++;:}
+ | DISYUNCION:s notacionEr:a notacionEr:b {:RESULT= new NodoArbol(contadorNodosN, s, b, a, hojas); contadorNodosN++;:}
+ | UNAMASVECES:s notacionEr:a {:RESULT= new NodoArbol(contadorNodosN, s, null, a, hojas); contadorNodosN++;:}
+ | CEROUNAVEZ:s notacionEr:a {:RESULT= new NodoArbol(contadorNodosN, s, null, a, hojas); contadorNodosN++;:}
+ | CEROMASVECES:s notacionEr:a {:RESULT= new NodoArbol(contadorNodosN, s, null, a, hojas); contadorNodosN++;:}
+ | CADENA:a {: contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
+ | LLAVEABRIR ID:a LLAVECERRAR {: contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
+ | SALTOLINEA:a {: contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
+ | COMILLASIMPLE:a {: contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
+ | COMILLADOBLE:a {: contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
 ; 
 
 /*erDoble::= CONCATENACION:a notacionEr:b notacionEr:c {:RESULT=a+b+c;:}

@@ -5,6 +5,7 @@
  */
 package regexiveolc1;
 
+import Clases.Arbol;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.StringReader;
@@ -27,8 +28,8 @@ public class RegexiveOLC1 {
         // TODO code application logic here
         System.out.println("Hola esto es regexive");
         
-        /*
-        HashMap<Integer, ArrayList<String>> mapa = new HashMap<>();
+        
+        /*HashMap<Integer, ArrayList<String>> mapa = new HashMap<>();
         ArrayList<String> palabras = new ArrayList<>();
         palabras.add("Hola");
         palabras.add("Como");
@@ -38,6 +39,7 @@ public class RegexiveOLC1 {
         
         mapa.get(1).add("PRUEBA");
         System.out.println(mapa.get(2));
+        System.out.println("La direccion es esta: "+mapa.get(mapa));
         /*
         ArrayList<String> palabras = new ArrayList<>();
         palabras.add("Palabra1");
@@ -50,14 +52,25 @@ public class RegexiveOLC1 {
         } */
         //Excepcion exc = new Excepcion(Enum.LEXICO, "Error Lexico", 0, 0);
         //System.out.println(exc.getTipo().ordinal());
-        //interpretar("Entrada3M.txt");
+        interpretar("entrada4D.olc");
     }
     
     private static void interpretar(String path) {
         Analizador.Sintactico parse;
+        //Analizador.Lexico scanner;
         try {
-            parse = new Analizador.Sintactico(new Analizador.Lexico(new BufferedReader(new FileReader(path))));
-            parse.parse();        
+            //scanner = new Analizador.Lexico(new BufferedReader(new FileReader(path))); //separado
+            parse = new Analizador.Sintactico(new Analizador.Lexico(new BufferedReader(new FileReader(path))));//junto
+            parse.parse(); 
+            System.out.println("\n********************ARBOLES********************");
+            for (Arbol Arbol : parse.Arboles) {
+                System.out.println(Arbol.getNombre() + "\n");
+                Arbol.recorrerArbol();
+                System.out.println("\n\n\n");
+                
+                System.out.println(Arbol.realizarGrafica());
+                System.out.println("\n\n******************************************");
+            }
         } catch (Exception ex) {
             System.out.println("Error fatal en compilación de entrada.");
             System.out.println("Causa: "+ex.getCause());

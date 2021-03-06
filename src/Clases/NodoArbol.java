@@ -19,6 +19,7 @@ public class NodoArbol {
     private NodoArbol derecha;
     private NodoArbol izquierda;
     private boolean anulable;
+    private boolean evaluarHoja;
     
     private ArrayList<NodoArbol> primeros;
     private ArrayList<NodoArbol> ultimos;
@@ -31,6 +32,7 @@ public class NodoArbol {
         this.derecha = null;
         this.izquierda = null;
         this.anulable = false;
+        this.evaluarHoja = true;
         
         this.primeros = new ArrayList<>();
         this.ultimos = new ArrayList<>();
@@ -42,11 +44,12 @@ public class NodoArbol {
     }
 
     // Nodo que no sea una hoja
-    public NodoArbol(String interior, NodoArbol derecha, NodoArbol izquierda, HashMap<Integer, ArrayList<NodoArbol>> hojas) {
-        this.idNodo = -1;
+    public NodoArbol(int idNodo, String interior, NodoArbol derecha, NodoArbol izquierda, HashMap<Integer, ArrayList<NodoArbol>> hojas) {
+        this.idNodo = idNodo;
         this.interior = interior;
         this.derecha = derecha;
         this.izquierda = izquierda;
+        this.evaluarHoja = false;
         
         this.primeros = new ArrayList<>();
         this.ultimos = new ArrayList<>();
@@ -66,7 +69,7 @@ public class NodoArbol {
                     this.primeros.addAll(this.izquierda.getPrimeros());
                     this.primeros.addAll(this.derecha.getPrimeros());
                 }else{
-                    this.primeros.addAll(this.derecha.getPrimeros());
+                    this.primeros.addAll(this.izquierda.getPrimeros());
                 }
                 //Establecemos los ultimos
                 if (this.derecha.isAnulable()) {
@@ -181,6 +184,14 @@ public class NodoArbol {
         this.anulable = anulable;
     }
 
+    public boolean isEvaluarHoja() {
+        return evaluarHoja;
+    }
+
+    public void setEvaluarHoja(boolean evaluarHoja) {
+        this.evaluarHoja = evaluarHoja;
+    }
+
     public ArrayList<NodoArbol> getPrimeros() {
         return primeros;
     }
@@ -204,9 +215,4 @@ public class NodoArbol {
     public void setSiguientes(ArrayList<NodoArbol> siguientes) {
         this.siguientes = siguientes;
     }
-    
-    
-    
-    
-    
 }

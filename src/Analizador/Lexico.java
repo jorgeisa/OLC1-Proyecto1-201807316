@@ -753,7 +753,9 @@ public class Lexico implements java_cup.runtime.Scanner {
           case 50: break;
           case 20: 
             { yybegin(YYINITIAL);
-        return new Symbol(sym.CADENA, yyline, yychar, string.toString());
+        Symbol sim = new Symbol(sym.CADENA, yyline, yychar, string.toString());
+        string = new StringBuffer();
+        return sim;
             } 
             // fall through
           case 51: break;

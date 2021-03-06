@@ -106,7 +106,9 @@ FLECHA = "-"{BLANCOS}">"
 
     \" {
         yybegin(YYINITIAL);
-        return new Symbol(sym.CADENA, yyline, yychar, string.toString());
+        Symbol sim = new Symbol(sym.CADENA, yyline, yychar, string.toString());
+        string = new StringBuffer();
+        return sim; 
        }
 
     [^\n\r\"\\]+        {string.append(yytext());}
