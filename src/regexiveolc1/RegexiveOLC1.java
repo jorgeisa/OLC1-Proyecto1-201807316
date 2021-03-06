@@ -10,6 +10,10 @@ import java.io.FileReader;
 import java.io.StringReader;
 import Clases.Enum;
 import Clases.Excepcion;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 /**
  *
  * @author Isaac
@@ -22,6 +26,28 @@ public class RegexiveOLC1 {
     public static void main(String[] args) {
         // TODO code application logic here
         System.out.println("Hola esto es regexive");
+        
+        /*
+        HashMap<Integer, ArrayList<String>> mapa = new HashMap<>();
+        ArrayList<String> palabras = new ArrayList<>();
+        palabras.add("Hola");
+        palabras.add("Como");
+        palabras.add("Estas");
+        palabras.add("?");
+        mapa.put(1, palabras);
+        
+        mapa.get(1).add("PRUEBA");
+        System.out.println(mapa.get(2));
+        /*
+        ArrayList<String> palabras = new ArrayList<>();
+        palabras.add("Palabra1");
+        palabras.add("Palabra2");
+        palabras.add("Palabra3");
+        palabras.add("Palabra4");
+        
+        for (String palabra : palabras) {
+            System.out.println(palabra);
+        } */
         //Excepcion exc = new Excepcion(Enum.LEXICO, "Error Lexico", 0, 0);
         //System.out.println(exc.getTipo().ordinal());
         //interpretar("Entrada3M.txt");

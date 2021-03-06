@@ -36,9 +36,7 @@ public class NodoArbol {
         this.ultimos = new ArrayList<>();
         this.siguientes = new ArrayList<>();
         this.primeros.add(this);
-        this.ultimos.add(this);
-        this.siguientes = new ArrayList<>();
-        
+        this.ultimos.add(this);        
         hojas.put(idNodo, new ArrayList<>()); //Agrego la hoja con un array
         
     }
@@ -79,6 +77,17 @@ public class NodoArbol {
                 }
                 
                 //establecemos los siguientes
+                //Para cada elemento del array del los ultimos de izquierda (1,2,3...)
+                //agregar los primeros del nodo derecho a la tabla hash de siguientes
+                //de los nodos o id en la tabla hash
+                for (NodoArbol ultimo : this.izquierda.getUltimos()) {
+                    if (hojas.get(ultimo.getIdNodo())!=null) {
+                        hojas.get(ultimo.getIdNodo()).addAll(this.derecha.getPrimeros());
+                    }
+                }
+
+                break;
+            
             case "|":
             //Disyuncion
                 this.anulable = this.izquierda.isAnulable() || this.derecha.isAnulable();
@@ -88,9 +97,7 @@ public class NodoArbol {
                 //Establecemos los ultimos
                 this.ultimos.addAll(this.izquierda.getUltimos());
                 this.ultimos.addAll(this.derecha.getUltimos());
-                
-                //establecemos los siguientes
-                
+                break;
             case "*":
             // cero o mas veces
                 this.anulable = true;
@@ -100,6 +107,12 @@ public class NodoArbol {
                 this.ultimos = this.izquierda.getUltimos();
                 
                 //establecemos los siguientes
+                for (NodoArbol ultimo : this.izquierda.getUltimos()) {
+                    if (hojas.get(ultimo.getIdNodo())!=null) {
+                        hojas.get(ultimo.getIdNodo()).addAll(this.izquierda.getPrimeros());
+                    }
+                }
+                break;
                 
             case "+":
             // una o mas veces
@@ -110,7 +123,13 @@ public class NodoArbol {
                 this.ultimos = this.izquierda.getUltimos();
                 
                 //establecemos los siguientes
-                
+                for (NodoArbol ultimo : this.izquierda.getUltimos()) {
+                    if (hojas.get(ultimo.getIdNodo())!=null) {
+                        hojas.get(ultimo.getIdNodo()).addAll(this.izquierda.getPrimeros());
+                    }
+                }
+                break;
+                                
             case "?":
             // cero o una vez
                 this.anulable = true;
@@ -118,13 +137,10 @@ public class NodoArbol {
                 this.primeros = this.izquierda.getPrimeros();
                 //Establecemos los ultimos
                 this.ultimos = this.izquierda.getUltimos();
-                
-                //establecemos los siguientes
+                break;               
         }
     }
     
-    
-
     public int getIdNodo() {
         return idNodo;
     }
@@ -184,7 +200,7 @@ public class NodoArbol {
     public ArrayList<NodoArbol> getSiguientes() {
         return siguientes;
     }
-
+    
     public void setSiguientes(ArrayList<NodoArbol> siguientes) {
         this.siguientes = siguientes;
     }
