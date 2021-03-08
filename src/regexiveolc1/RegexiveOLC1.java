@@ -28,6 +28,9 @@ public class RegexiveOLC1 {
         // TODO code application logic here
         System.out.println("Hola esto es regexive");
         
+        Interfaz pantallaInicial = new Interfaz();
+        pantallaInicial.setVisible(true);
+        
         
         /*HashMap<Integer, ArrayList<String>> mapa = new HashMap<>();
         ArrayList<String> palabras = new ArrayList<>();
@@ -52,7 +55,7 @@ public class RegexiveOLC1 {
         } */
         //Excepcion exc = new Excepcion(Enum.LEXICO, "Error Lexico", 0, 0);
         //System.out.println(exc.getTipo().ordinal());
-        interpretar("entrada4D.olc");
+        //interpretar("entrada4D.olc");
     }
     
     private static void interpretar(String path) {

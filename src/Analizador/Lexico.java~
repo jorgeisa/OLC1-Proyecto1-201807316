@@ -265,6 +265,7 @@ public class Lexico implements java_cup.runtime.Scanner {
   private int zzFinalHighSurrogate = 0;
 
   /* user code: */
+    public boolean erroresL = false;
     StringBuffer string = new StringBuffer();
     public ArrayList<Excepcion> Excepciones;
     Enum enumError;
@@ -661,7 +662,8 @@ public class Lexico implements java_cup.runtime.Scanner {
             // fall through
           case 32: break;
           case 2: 
-            { Excepciones.add(new Excepcion(enumError.LEXICO, "Caracter no valido, error lexico: "+ yytext(), yyline, yychar));
+            { erroresL = true;
+        Excepciones.add(new Excepcion(enumError.LEXICO, "Caracter no valido, error lexico: "+ yytext(), yyline, yychar));
         System.out.println("Este es un error lexico: "+yytext()+", en la linea: "+yyline+", en la columna: "+yychar);
             } 
             // fall through

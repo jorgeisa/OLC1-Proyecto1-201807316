@@ -17,17 +17,21 @@ import java.util.Map;
 
 parser code 
 {:
+    
     public ArrayList<Excepcion> Excepciones = new ArrayList();
     public ArrayList<Arbol> Arboles = new ArrayList();
+    public HashMap<Integer, ArrayList<NodoArbol>> hojas = new HashMap<>();
+    public boolean erroresS = false;
     Enum enumError;
     int contadorNodos = 0;
     int contadorNodosN = 9000;
-    public HashMap<Integer, ArrayList<NodoArbol>> hojas = new HashMap<>();
+    
 
     /**
      * Método al que se llama automáticamente ante algún error sintactico.
      **/ 
     public void syntax_error(Symbol s){ 
+        erroresS = true;
         Excepciones.add(new Excepcion(enumError.SINTACTICO, "Caracter no valido, error sintactico: "+ s.value, s.left, s.right));
         System.out.println("Error Sintáctico en la Línea " + (s.left) +
         " Columna "+s.right+ ". No se esperaba este componente: " +s.value+".");
@@ -38,6 +42,7 @@ parser code
      * en el que ya no es posible una recuperación de errores.
      **/ 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+        erroresS = true;
         System.out.println("Error síntactico irrecuperable en la Línea " + 
         (s.left)+ " Columna "+s.right+". Componente " + s.value + 
         " no reconocido."); 
@@ -102,7 +107,7 @@ notacionConjunto ::= notacionConjunto:a CONJUNTOGUION notacionConjunto:b {:RESUL
  | ASCIIS:a {:RESULT=new String(a);:}
 ;
 
-conjuntoEr ::= ID:a FLECHAASIGNAR:b notacionEr:c PUNTOCOMA:d {:contadorNodos++; RESULT= new Arbol(new NodoArbol(contadorNodosN, ".", new NodoArbol(contadorNodos, "º", hojas), c, hojas), a); hojas = new HashMap<>(); contadorNodos = 0; contadorNodosN=9000;:}
+conjuntoEr ::= ID:a FLECHAASIGNAR:b notacionEr:c PUNTOCOMA:d {:contadorNodos++; RESULT= new Arbol(new NodoArbol(contadorNodosN, ".", new NodoArbol(contadorNodos, "º", hojas), c, hojas), a, hojas); hojas = new HashMap<>(); contadorNodos = 0; contadorNodosN=9000;:}
 ;
 
 notacionEr::= CONCATENACION:s notacionEr:a notacionEr:b {:RESULT= new NodoArbol(contadorNodosN, s, b, a, hojas); contadorNodosN++;:}

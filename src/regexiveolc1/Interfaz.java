@@ -5,13 +5,21 @@
  */
 package regexiveolc1;
 
-import java.io.BufferedReader;
+import Clases.Arbol;
+import Clases.Excepcion;
+import Clases.Reportes;
+import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.StringReader;
+import java.util.ArrayList;
 
 /**
  *
@@ -22,6 +30,10 @@ public class Interfaz extends javax.swing.JFrame {
     /**
      * Creates new form Interfaz
      */
+    String pathAbierto = "";
+    String nombreAbierto = "";
+    String cadenaAbierto = "";
+    Reportes reportes = new Reportes();
     public Interfaz() {
         initComponents();
         setLocationRelativeTo(null);
@@ -40,8 +52,8 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaArchivo = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jButton1_Automatas = new javax.swing.JButton();
+        jButton2_Analizar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
@@ -49,8 +61,14 @@ public class Interfaz extends javax.swing.JFrame {
         jTree1 = new javax.swing.JTree();
         jPanel1 = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox<>();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextAreaErrores = new javax.swing.JTextArea();
+        jButton3_Limpiar = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel_AvisoCambio = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -76,35 +94,70 @@ public class Interfaz extends javax.swing.JFrame {
 
         jTextAreaArchivo.setColumns(20);
         jTextAreaArchivo.setRows(5);
+        jTextAreaArchivo.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         jScrollPane1.setViewportView(jTextAreaArchivo);
 
-        jButton1.setText("Automatas");
+        jButton1_Automatas.setText("Automatas");
 
-        jButton2.setText("Analizar");
+        jButton2_Analizar.setText("Analizar");
+        jButton2_Analizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2_AnalizarActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Salida de Analisis:");
 
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
+        jTextArea2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         jScrollPane2.setViewportView(jTextArea2);
 
         jTree1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jScrollPane3.setViewportView(jTree1);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 537, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 299, Short.MAX_VALUE)
         );
+
+        jTextAreaErrores.setColumns(20);
+        jTextAreaErrores.setRows(5);
+        jTextAreaErrores.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        jScrollPane4.setViewportView(jTextAreaErrores);
+
+        jButton3_Limpiar.setText("Limpiar");
+        jButton3_Limpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3_LimpiarActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Errores:");
+
+        jLabel_AvisoCambio.setBackground(new java.awt.Color(153, 153, 153));
+        jLabel_AvisoCambio.setForeground(new java.awt.Color(255, 0, 51));
 
         jMenu1.setText("File");
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem5.setText("Nuevo Archivo");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem5);
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem1.setText("Abrir ");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -152,62 +205,69 @@ public class Interfaz extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(85, 85, 85)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-                        .addGap(125, 125, 125)
-                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                        .addGap(222, 222, 222))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGap(374, 374, 374))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jScrollPane1)
-                                        .addGap(18, 18, 18)))
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(181, 181, 181)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(284, 284, 284))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel_AvisoCambio, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGap(209, 209, 209)
+                                .addComponent(jButton1_Automatas, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton2_Analizar, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton3_Limpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE))
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                    .addComponent(jLabel_AvisoCambio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 4, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton3_Limpiar)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButton1_Automatas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton2_Analizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(3, 3, 3)
                         .addComponent(jLabel2))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane4))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -221,16 +281,39 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         System.out.println("Opcion Guardar Archivo");
+        guardarArchivo();
+        // Sobreescribir el contenido del JText en el Archivo
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         System.out.println("Opcion Guardar como... Archivo");
         guardarArchivoComo();
+        System.out.println(pathAbierto);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         System.out.println("Opcion Generar JSON");
     }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jButton2_AnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2_AnalizarActionPerformed
+        if (!pathAbierto.equals("")) {
+            analizarArchivo();
+        }else{
+            System.out.println("Abra un archivo primero!");
+        }
+    }//GEN-LAST:event_jButton2_AnalizarActionPerformed
+
+    private void jButton3_LimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3_LimpiarActionPerformed
+        // Boton de Limpiar
+        jTextAreaArchivo.setText("");
+        pathAbierto ="";
+        System.out.println("Se ha limpiado");
+    }//GEN-LAST:event_jButton3_LimpiarActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        // NUEVO ARCHIVO
+        guardarArchivoComo();
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -267,6 +350,9 @@ public class Interfaz extends javax.swing.JFrame {
         });
     }
     
+    
+    //*************************************************************************
+    // FUNCIONALIDADES DE BARRA HERRAMIENTAS       
     public void abrirArchivo(){
         JFileChooser fc = new JFileChooser(); //Creamos un nuevo objeto JFileChooser
         FileNameExtensionFilter archivoOlc = new FileNameExtensionFilter("Archivos .olc", "olc");
@@ -275,20 +361,27 @@ public class Interfaz extends javax.swing.JFrame {
             int seleccion = fc.showOpenDialog(this); //Abrimos el JFileChooser y guardamos el resultado en seleccion
             if (seleccion == JFileChooser.APPROVE_OPTION){ //Si el usuario ha pulsado la opción Aceptar
                 File fichero = fc.getSelectedFile(); //Guardamos en la variable fichero el archivo seleccionado
-                
                 // Obteniendo texto del fichero
                 if (fichero != null){
+                    System.out.println("El path es el siguiente: "+fichero.getPath());
+                    System.out.println("El Nombre es el siguiente: "+fichero.getName()+ "\n");
+                    pathAbierto = fichero.getPath();
+                    nombreAbierto = fichero.getName();
+                    
                     String cadena; // cadena para obtener linea
                     String cadenaArchivo=""; // cadena para concatenar el texto
+                    
                     FileReader archivo = new FileReader(fichero);
                     BufferedReader lee = new BufferedReader(archivo);
                     while((cadena=lee.readLine())!=null){
                         cadenaArchivo += cadena + "\n";
                     }
-                    textoEnAreaDeArchivo(cadenaArchivo);
+                    
+                    cadenaAbierto = cadenaArchivo;
+                    
+                    textoEnAreaDeArchivo(cadenaArchivo); //Coloca el texto del archivo en el JText
                     archivo.close();
                 }
-                
                 System.out.println("Se abrio el archivo.");
             }else if(seleccion == JFileChooser.CANCEL_OPTION || seleccion == JFileChooser.ERROR_OPTION){
                 System.out.println("No se ha abierto el archivo.");
@@ -298,6 +391,22 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }
     
+    
+    public void guardarArchivo(){
+        try {
+            String textoEscritura = jTextAreaArchivo.getText();
+            cadenaAbierto = jTextAreaArchivo.getText();
+            jLabel_AvisoCambio.setText("*AVISO: Se ha guardado con exito :D");
+            jLabel_AvisoCambio.setForeground(Color.GREEN);
+            File directorio = new File(pathAbierto);
+            BufferedWriter salida = new BufferedWriter(new FileWriter(directorio));
+            salida.write(textoEscritura);
+            salida.close();
+        } catch (Exception e) {
+        }
+    }
+    
+  
     public void guardarArchivoComo(){
         JFileChooser fc = new JFileChooser(); //Creamos un nuevo objeto JFileChooser
         fc.setApproveButtonText("Guardar");
@@ -307,33 +416,156 @@ public class Interfaz extends javax.swing.JFrame {
         try {
             int seleccion = fc.showSaveDialog(null);
             if (seleccion == JFileChooser.APPROVE_OPTION){ 
-                File archivo = new File(fc.getSelectedFile()+".olc");
-                BufferedWriter salida = new BufferedWriter(new FileWriter(archivo));
+                //Obtengo el String del JText
                 String textoEscritura = jTextAreaArchivo.getText();
                 
+                //Realizar el archivo en la direccion que pido
+                File archivo = new File(fc.getSelectedFile()+".olc");
+                BufferedWriter salida = new BufferedWriter(new FileWriter(archivo));
                 salida.write(textoEscritura);
+                System.out.println(archivo.getName() + " Nombre del archivo");
+                
+                
+                /*//Realizar el archivo en la ruta por defecto
+                String pathDefecto = new File(archivo.getName()).getAbsolutePath();
+                File archivoDefecto = new File(pathDefecto);
+                BufferedWriter salidaDefecto = new BufferedWriter(new FileWriter(archivoDefecto));
+                salidaDefecto.write(textoEscritura);
+                
+                System.out.println(pathDefecto + " Es el directorio del proyecto");
+                salidaDefecto.close();*/
+                System.out.println(fc.getSelectedFile());
                 salida.close();
             }
-            System.out.println(fc.getSelectedFile());    
+               
             
         } catch (Exception e) {
+            System.out.println("Error Fatal en Guardar Como.");
         }
         
         
     }
-   
+    
+    //*************************************************************************
+    // FUNCIONALIDADES DE BOTONES  
+    
+    public void analizarArchivo(){
+        
+        if (!(cadenaAbierto.equals(jTextAreaArchivo.getText()))) {
+            jLabel_AvisoCambio.setText("*AVISO: Guardar antes de continuar!*");
+            jLabel_AvisoCambio.setForeground(Color.red);
+            return;
+        }
+        jLabel_AvisoCambio.setText("");
+        
+        Analizador.Sintactico sintactico;
+        Analizador.Lexico lexico;
+        try {
+            lexico = new Analizador.Lexico(new BufferedReader(new FileReader(pathAbierto)));
+            sintactico = new Analizador.Sintactico(lexico);
+            
+            sintactico.parse();
+            String errores = "";
+            jTextAreaErrores.setText("");
+            if (lexico.erroresL || sintactico.erroresS) {
+                
+                int contadorErrores = 0;
+                // Si hay errores Lexico
+                if (lexico.erroresL) {
+                    System.out.println("***************LISTA DE ERRORES LEXICOS***************");
+                    errores += "***************LISTA DE ERRORES LEXICOS***************\n\n";
+                    for (Excepcion errorLexico : lexico.Excepciones) {
+                        System.out.println(errorLexico.toString());
+                        contadorErrores++;
+                        errores +=  "#"+ contadorErrores +" , "+ errorLexico.toString()+ "\n";
+                    }
+                }
 
+                //Si hay errores Sintacticos
+                if(sintactico.erroresS){
+                    errores += "\n";
+                    System.out.println("***************LISTA DE ERRORES SINTACTICOS***************");
+                    errores += "***************LISTA DE ERRORES SINTACTICOS***************\n\n";
+                    for(Excepcion errorSintactico : sintactico.Excepciones){
+                        System.out.println(errorSintactico.toString());
+                        contadorErrores++;
+                        errores +=  "#"+ contadorErrores +" , "+ errorSintactico.toString()+ "\n";
+                    }
+                }   
+                errores += "\n\n";
+                
+                reportes.reporteErrores(lexico.Excepciones, sintactico.Excepciones, nombreAbierto);
+                
+                jTextAreaErrores.setText(errores);
+                jTextAreaErrores.setForeground(Color.red);
+            }else{
+                errores = "No hay errores Lexicos o Sintacticos!! ^-^\n\n";
+                jTextAreaErrores.setText(errores);
+                jTextAreaErrores.setForeground(Color.GREEN);
+                for (Arbol Arbol : sintactico.Arboles) {
+                    System.out.println(Arbol.getNombre() + "\n");
+                    Arbol.recorrerArbol();
+                    System.out.println("\n\n\n");
+
+                    System.out.println(Arbol.realizarGrafica());
+                    System.out.println("\n\n******************************************");
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("Error fatal en compilacion de entrada");
+            System.out.println("Causa" + ex.getCause());
+        }
+    }
+    
+    
+    //*************************************************************************
+    // Funcionalidades complementarias
+    
     public void textoEnAreaDeArchivo(String texto){
         jTextAreaArchivo.setText("");
         jTextAreaArchivo.setText(texto);
     }
+    
+    public void erroresLexYSin(String path){
+        Analizador.Sintactico sintactico;
+        Analizador.Lexico lexico;
+        try {
+            lexico = new Analizador.Lexico(new BufferedReader(new FileReader(path)));
+            sintactico = new Analizador.Sintactico(lexico);
+            sintactico.parse();
+            
+            ArrayList<Excepcion> arrayErroresLexicos = lexico.Excepciones; 
+            
+            System.out.println("***************LISTA DE ERRORES LEXICOS***************");
+            for (Excepcion errorLexico : arrayErroresLexicos) {
+                errorLexico.toString();
+            }
+            
+            ArrayList<Excepcion> arrayErroresSintacticos = sintactico.Excepciones; 
+            
+            System.out.println("***************LISTA DE ERRORES SINTACTICOS***************");
+            for(Excepcion errorSintactico : arrayErroresSintacticos){
+                errorSintactico.toString();
+            }
+            
+        } catch (Exception ex) {
+            System.out.println("Error fatal en compilacion de entrada");
+            System.out.println("Causa" + ex.getCause());
+        }
+        
+    }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton1_Automatas;
+    private javax.swing.JButton jButton2_Analizar;
+    private javax.swing.JButton jButton3_Limpiar;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel_AvisoCambio;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -341,12 +573,15 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextAreaArchivo;
+    private javax.swing.JTextArea jTextAreaErrores;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }

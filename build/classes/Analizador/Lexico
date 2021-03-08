@@ -20,6 +20,7 @@ import Clases.Enum;
 %ignorecase
 
 %{
+    public boolean erroresL = false;
     StringBuffer string = new StringBuffer();
     public ArrayList<Excepcion> Excepciones;
     Enum enumError;
@@ -97,6 +98,7 @@ FLECHA = "-"{BLANCOS}">"
     }
 
     . {
+        erroresL = true;
         Excepciones.add(new Excepcion(enumError.LEXICO, "Caracter no valido, error lexico: "+ yytext(), yyline, yychar));
         System.out.println("Este es un error lexico: "+yytext()+", en la linea: "+yyline+", en la columna: "+yychar);
     }

@@ -188,17 +188,21 @@ public class Sintactico extends java_cup.runtime.lr_parser {
 
 
 
+    
     public ArrayList<Excepcion> Excepciones = new ArrayList();
     public ArrayList<Arbol> Arboles = new ArrayList();
+    public HashMap<Integer, ArrayList<NodoArbol>> hojas = new HashMap<>();
+    public boolean erroresS = false;
     Enum enumError;
     int contadorNodos = 0;
     int contadorNodosN = 9000;
-    public HashMap<Integer, ArrayList<NodoArbol>> hojas = new HashMap<>();
+    
 
     /**
      * Método al que se llama automáticamente ante algún error sintactico.
      **/ 
     public void syntax_error(Symbol s){ 
+        erroresS = true;
         Excepciones.add(new Excepcion(enumError.SINTACTICO, "Caracter no valido, error sintactico: "+ s.value, s.left, s.right));
         System.out.println("Error Sintáctico en la Línea " + (s.left) +
         " Columna "+s.right+ ". No se esperaba este componente: " +s.value+".");
@@ -209,6 +213,7 @@ public class Sintactico extends java_cup.runtime.lr_parser {
      * en el que ya no es posible una recuperación de errores.
      **/ 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+        erroresS = true;
         System.out.println("Error síntactico irrecuperable en la Línea " + 
         (s.left)+ " Columna "+s.right+". Componente " + s.value + 
         " no reconocido."); 
@@ -437,7 +442,7 @@ class CUP$Sintactico$actions {
 		int dleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int dright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String d = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		contadorNodos++; RESULT= new Arbol(new NodoArbol(contadorNodosN, ".", new NodoArbol(contadorNodos, "º", hojas), c, hojas), a); hojas = new HashMap<>(); contadorNodos = 0; contadorNodosN=9000;
+		contadorNodos++; RESULT= new Arbol(new NodoArbol(contadorNodosN, ".", new NodoArbol(contadorNodos, "º", hojas), c, hojas), a, hojas); hojas = new HashMap<>(); contadorNodos = 0; contadorNodosN=9000;
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("conjuntoEr",7, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-3)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;

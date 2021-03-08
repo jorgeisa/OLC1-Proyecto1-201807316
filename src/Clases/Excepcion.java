@@ -57,11 +57,10 @@ public class Excepcion {
 
     @Override
     public String toString() {
-        return "Excepcion: " + 
-                "\ntipo: " + tipo + 
-                "\ndescripcion: " + descripcion + 
-                "\nFila: " + fila + 
-                "\ncolumna: " + columna + '}';
+        return  "tipo: " + tipo + 
+                ", descripcion: " + descripcion + 
+                ", Fila: " + fila + 
+                ", columna: " + columna;
     }
     
     
