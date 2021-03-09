@@ -110,6 +110,7 @@ public class Arbol {
         return grafica;
     }
     
+    // METODOS PARA GRAFICAR
     private String realizarNodos(NodoArbol temp){
         String grafica = "";
         if(temp != null){
@@ -199,29 +200,150 @@ public class Arbol {
         return retorno;
     }
     
+    public String realizarGraficaTransiciones(){
+        return this.realizarTransiciones();
+    }
+    
+    private String realizarTransiciones(){
+        String graphTransiciones = "";
+        graphTransiciones += "digraph G {\n" +
+                             "\n" +
+                             "node [shape=record];\n" +
+                             "rankdir = \"TB\";\n"+
+                             "b [label = \n\"";
+        
+        // COLUMNA DE ESTADOS
+        String columnaEstados = "|{Estados|";
+        int contador = 0;
+        for (Map.Entry<String, Estado> estado : this.estados.entrySet()) {
+            String key = estado.getKey();
+            Estado val = estado.getValue();
+            if (contador != this.estados.size()-1) {
+                columnaEstados += val.getNombre()+"-["+key+"]"+"|";
+            }else{
+                columnaEstados += val.getNombre()+"-["+key+"]"+"}|";
+            }
+            contador++;
+        }
+        
+        contador = 0;
+        String columnasTerminales = "";
+        // COLUMNA DE TERMINALES
+        for (String terminal : this.terminales) {
+            columnasTerminales += terminal.equals("\\n")?"{\\" + terminal + "|":"{" + terminal + "|";
+            
+            int contadorEstados = 0;
+            for (Map.Entry<String, Estado> estado : estados.entrySet()) {
+                String key = estado.getKey();
+                Estado val = estado.getValue();
+                ArrayList<Transicion> transiciones = val.getListaTransiciones();
+                for (Transicion transicion : transiciones) {
+                    if (transicion.getNombreTransicion().equals(terminal)) {
+                        String nombreEstado = transicion.getEstado().getNombre();
+                        
+                        if (contadorEstados != this.estados.size()-1) {
+                            columnasTerminales += nombreEstado+"|";
+                        }else{
+                            columnasTerminales += nombreEstado+"}|";
+                        }
+                    }
+                }
+                contadorEstados++;
+            }
+            contador++;
+        }
+        columnasTerminales += "\"];\n" +
+                              "}";
+        
+        graphTransiciones += columnaEstados + columnasTerminales;
+        return graphTransiciones;
+    }
+    
+    public String realizarGraficaAFD(){
+        return this.realizarAfd();
+    }
+    
+    private String realizarAfd(){
+        String graphAfd ="";
+        String nodosAceptacion = "";
+        String estadosUniones = "";
+        int cuentaEstados = 0;
+        
+        
+        for (Map.Entry<String, Estado> Estado : this.estados.entrySet()) {
+            String key = Estado.getKey();
+            Estado val = Estado.getValue();
+            
+            // Establecer estados de aceptacion
+            if (val.isEstadoAceptacion()) {
+                if (cuentaEstados != this.estados.size()-1) {
+                    nodosAceptacion+=val.getNombre()+",";
+                }else{
+                    nodosAceptacion+=val.getNombre()+";";
+                }
+            }
+            
+            for (Transicion transicion : val.getListaTransiciones()) {
+                if (!transicion.getEstado().getNombre().equals("SINV")) {
+                    
+                    estadosUniones += val.getNombre() +"->"+ transicion.getEstado().getNombre();
+                    if (transicion.getNombreTransicion().equals("\\n")) {
+                        estadosUniones += " [label = \"\\"+ transicion.getNombreTransicion() +"\" ];\n";
+                    }else if (transicion.getNombreTransicion().equals(" ")) {
+                        estadosUniones += " [label = \"\\\" \\\"\" ];\n";
+                    }else{
+                        estadosUniones += " [label = \""+ transicion.getNombreTransicion() +"\" ];\n";
+                    }
+                }
+            }
+            
+            cuentaEstados++;
+        }
+        
+        graphAfd +="digraph G{\n"+
+                 "node [shape = doublecircle]; " + nodosAceptacion + "\n"+
+                 "node [shape = circle];\n" +
+                 "rankdir=LR;\n"+
+                 estadosUniones+
+                 "}";
+                 
+        return graphAfd;
+    }
+    
+    // METODOS PARA GENERAR DATOS (TRANSICIONES, ESTADOS)
     public void generarEstados(){
-        generandoPrimerEstado(); // El primer estado se genhera por la primero de la Raiz
-        generarDemasEstados();
+        this.generandoPrimerEstado(); // El primer estado se genhera por la primero de la Raiz
+        this.generarDemasEstados();
+        this.imprimirTransiciones();
     }
     
     private void generandoPrimerEstado(){
         //Estados iniciales
         String primerosNodos = "";
+        boolean estado=false;
+        int idAceptacion = this.raiz.getDerecha().getIdNodo();
         for (int i = 0; i < this.raiz.getPrimeros().size(); i++) {
             if (i != this.raiz.getPrimeros().size()-1) {
                 primerosNodos += this.raiz.getPrimeros().get(i).getIdNodo()+",";
             }else{
                 primerosNodos += this.raiz.getPrimeros().get(i).getIdNodo();
             }
+            
+            //Comparacion para ver si es un estado de aceptacion
+            int idNodoActual = this.raiz.getPrimeros().get(i).getIdNodo();
+            if ( idNodoActual == idAceptacion) {
+                estado = true;
+            }
         }
         
-        Estado estadoUno = new Estado("S"+this.contadorEstados, primerosNodos, this.raiz.getPrimeros());
+        Estado estadoUno = new Estado("S"+this.contadorEstados, primerosNodos, this.raiz.getPrimeros(), estado);
         this.contadorEstados++;
         this.estados.put(primerosNodos, estadoUno);
         pilaEstados.add(estadoUno);
     }
     
     private void generarDemasEstados(){
+        int idNodoAceptacion = this.raiz.getDerecha().getIdNodo();
         while(!pilaEstados.isEmpty()){
             // Al remover pila.remove(0)
             // Al hacer un add se debe de realizar pila.add(object);
@@ -251,6 +373,7 @@ public class Arbol {
                     }
                 }
                 
+                boolean estadoAceptacion = false;
                 // Hago la llave de mi hashmap
                 String nodosEstadoNuevo = "";
                 for (int z = 0; z< nodosTemporales.size(); z++) {
@@ -258,6 +381,11 @@ public class Arbol {
                         nodosEstadoNuevo += nodosTemporales.get(z).getIdNodo()+",";
                     }else{
                         nodosEstadoNuevo += nodosTemporales.get(z).getIdNodo();
+                    }
+                    
+                    int idNodoActual = nodosTemporales.get(z).getIdNodo();
+                    if (idNodoActual == idNodoAceptacion) {
+                        estadoAceptacion = true;
                     }
                 }
                 System.out.println("--------------------NODOS TEMPORALES----------------");
@@ -268,7 +396,7 @@ public class Arbol {
                     // Evaluo si el estado ya existe o es uno nuevo con la llave realizada
                     if (!estados.containsKey(nodosEstadoNuevo)) {
 
-                        Estado estadoNuevo = new Estado("S"+this.contadorEstados, nodosEstadoNuevo, nodosTemporales);
+                        Estado estadoNuevo = new Estado("S"+this.contadorEstados, nodosEstadoNuevo, nodosTemporales, estadoAceptacion);
                         Transicion nuevaTransicion = new Transicion(terminalActual, estadoNuevo);
                         estados.put(nodosEstadoNuevo, estadoNuevo);
                         estados.get(estadoActual.getLlave()).getListaTransiciones().add(nuevaTransicion);
@@ -283,7 +411,7 @@ public class Arbol {
                         System.out.println("Se agrega el mismo estado como nueva transicion");
                     } 
                 }else{
-                    Estado estadoNoExistente = new Estado("SINV", "SINV", nodosTemporales);
+                    Estado estadoNoExistente = new Estado("SINV", "SINV", nodosTemporales, false);
                     Transicion nuevaTransicion = new Transicion(terminalActual, estadoNoExistente);
                     estados.get(estadoActual.getLlave()).getListaTransiciones().add(nuevaTransicion);
                     System.out.println("Se agrega al estado actual una transicion con estado invalido");
@@ -293,22 +421,20 @@ public class Arbol {
         }
     }
     
+    // METODOS DE IMPRESION DE DATOS
     private void imprimirTransiciones(){
         System.out.println("--------------TRANSICIIONES--------------------");
         for (Map.Entry<String, Estado> estado : estados.entrySet()) {
             String key = estado.getKey();
             Estado val = estado.getValue();
-            System.out.println("\n*****Estado Actual: "+val.getNombre()+", Llave Asociada: "+key+"*****");
-            System.out.println("\tNodos Asociados: ");
-            for (NodoArbol nodo : val.getListaNodos()) {
-                System.out.print("\t"+nodo.getIdNodo()+",");
-            }
+            System.out.println("\n*****Estado Actual: "+val.getNombre()+", Llave Asociada: "+key+", Aceptacion: "+val.isEstadoAceptacion()+"*****");
             System.out.println("\nTransiciones Del Estado: ");
             for (Transicion transicion : val.getListaTransiciones()) {
                 System.out.println("\tNombre (terminal) Transicion: "+transicion.getNombreTransicion());
                 System.out.println("\tNombre Estado: "+transicion.getEstado().getNombre());
             }
         }
+        System.out.println("-----------------------------------------------");
     }
     
     public void recorrerArbol(){

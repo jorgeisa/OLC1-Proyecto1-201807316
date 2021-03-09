@@ -18,12 +18,14 @@ public class Estado {
     private String llave;
     private ArrayList<NodoArbol> listaNodos;
     private ArrayList<Transicion> listaTransiciones;
+    private boolean estadoAceptacion;
 
-    public Estado(String nombre, String llave, ArrayList<NodoArbol> listaNodos) {
+    public Estado(String nombre, String llave, ArrayList<NodoArbol> listaNodos, boolean estadoAceptacion) {
         this.nombre = nombre;
         this.listaNodos = listaNodos;
         this.listaTransiciones = new ArrayList<>();
         this.llave = llave;
+        this.estadoAceptacion = estadoAceptacion;
     }
 
     public String getNombre() {
@@ -61,6 +63,16 @@ public class Estado {
     public void setListaTransiciones(ArrayList<Transicion> listaTransiciones) {
         this.listaTransiciones = listaTransiciones;
     }
+
+    public boolean isEstadoAceptacion() {
+        return estadoAceptacion;
+    }
+
+    public void setEstadoAceptacion(boolean estadoAceptacion) {
+        this.estadoAceptacion = estadoAceptacion;
+    }
+    
+    
 
     
 }
