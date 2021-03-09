@@ -10,20 +10,20 @@ package Clases;
  * @author Isaac
  */
 public class Transicion {
-    private String transicion;
+    private String nombreTransicion;
     private Estado estado;
 
-    public Transicion(String transicion, Estado estado) {
-        this.transicion = transicion;
+    public Transicion(String nombreTransicion, Estado estado) {
+        this.nombreTransicion = nombreTransicion;
         this.estado = estado;
     }
 
-    public String getTransicion() {
-        return transicion;
+    public String getNombreTransicion() {
+        return nombreTransicion;
     }
 
-    public void setTransicion(String transicion) {
-        this.transicion = transicion;
+    public void setNombreTransicion(String nombreTransicion) {
+        this.nombreTransicion = nombreTransicion;
     }
 
     public Estado getEstado() {

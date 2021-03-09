@@ -15,13 +15,15 @@ import java.util.Map;
  */
 public class Estado {
     private String nombre;
-    private ArrayList<String> listaNodos;
+    private String llave;
+    private ArrayList<NodoArbol> listaNodos;
     private ArrayList<Transicion> listaTransiciones;
 
-    public Estado(String nombre, ArrayList<String> listaNodos, ArrayList<Transicion> listaTransiciones) {
+    public Estado(String nombre, String llave, ArrayList<NodoArbol> listaNodos) {
         this.nombre = nombre;
         this.listaNodos = listaNodos;
-        this.listaTransiciones = listaTransiciones;
+        this.listaTransiciones = new ArrayList<>();
+        this.llave = llave;
     }
 
     public String getNombre() {
@@ -32,13 +34,25 @@ public class Estado {
         this.nombre = nombre;
     }
 
-    public ArrayList<String> getListaNodos() {
+    public String getLlave() {
+        return llave;
+    }
+
+    public void setLlave(String llave) {
+        this.llave = llave;
+    }
+    
+    
+
+    public ArrayList<NodoArbol> getListaNodos() {
         return listaNodos;
     }
 
-    public void setListaNodos(ArrayList<String> listaNodos) {
+    public void setListaNodos(ArrayList<NodoArbol> listaNodos) {
         this.listaNodos = listaNodos;
     }
+
+    
 
     public ArrayList<Transicion> getListaTransiciones() {
         return listaTransiciones;
@@ -47,4 +61,6 @@ public class Estado {
     public void setListaTransiciones(ArrayList<Transicion> listaTransiciones) {
         this.listaTransiciones = listaTransiciones;
     }
+
+    
 }

@@ -20,6 +20,7 @@ parser code
     
     public ArrayList<Excepcion> Excepciones = new ArrayList();
     public ArrayList<Arbol> Arboles = new ArrayList();
+    public ArrayList<String> terminales = new ArrayList();
     public HashMap<Integer, ArrayList<NodoArbol>> hojas = new HashMap<>();
     public boolean erroresS = false;
     Enum enumError;
@@ -107,7 +108,7 @@ notacionConjunto ::= notacionConjunto:a CONJUNTOGUION notacionConjunto:b {:RESUL
  | ASCIIS:a {:RESULT=new String(a);:}
 ;
 
-conjuntoEr ::= ID:a FLECHAASIGNAR:b notacionEr:c PUNTOCOMA:d {:contadorNodos++; RESULT= new Arbol(new NodoArbol(contadorNodosN, ".", new NodoArbol(contadorNodos, "º", hojas), c, hojas), a, hojas); hojas = new HashMap<>(); contadorNodos = 0; contadorNodosN=9000;:}
+conjuntoEr ::= ID:a FLECHAASIGNAR:b notacionEr:c PUNTOCOMA:d {:contadorNodos++; RESULT= new Arbol(new NodoArbol(contadorNodosN, ".", new NodoArbol(contadorNodos, "º", hojas), c, hojas), a, hojas, terminales); hojas = new HashMap<>(); terminales = new ArrayList(); contadorNodos = 0; contadorNodosN=9000;:}
 ;
 
 notacionEr::= CONCATENACION:s notacionEr:a notacionEr:b {:RESULT= new NodoArbol(contadorNodosN, s, b, a, hojas); contadorNodosN++;:}
@@ -115,11 +116,11 @@ notacionEr::= CONCATENACION:s notacionEr:a notacionEr:b {:RESULT= new NodoArbol(
  | UNAMASVECES:s notacionEr:a {:RESULT= new NodoArbol(contadorNodosN, s, null, a, hojas); contadorNodosN++;:}
  | CEROUNAVEZ:s notacionEr:a {:RESULT= new NodoArbol(contadorNodosN, s, null, a, hojas); contadorNodosN++;:}
  | CEROMASVECES:s notacionEr:a {:RESULT= new NodoArbol(contadorNodosN, s, null, a, hojas); contadorNodosN++;:}
- | CADENA:a {: contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
- | LLAVEABRIR ID:a LLAVECERRAR {: contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
- | SALTOLINEA:a {: contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
- | COMILLASIMPLE:a {: contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
- | COMILLADOBLE:a {: contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
+ | CADENA:a {: if(!terminales.contains(a)){terminales.add(a);}  contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
+ | LLAVEABRIR ID:a LLAVECERRAR {: if(!terminales.contains(a)){terminales.add(a);} contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
+ | SALTOLINEA:a {: if(!terminales.contains(a)){terminales.add(a);} contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
+ | COMILLASIMPLE:a {: if(!terminales.contains(a)){terminales.add(a);} contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
+ | COMILLADOBLE:a {: if(!terminales.contains(a)){terminales.add(a);} contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);:}
 ; 
 
 /*erDoble::= CONCATENACION:a notacionEr:b notacionEr:c {:RESULT=a+b+c;:}

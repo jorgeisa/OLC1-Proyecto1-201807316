@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
+import static jdk.nashorn.internal.objects.NativeArray.map;
 /**
  *
  * @author Isaac
@@ -28,21 +30,61 @@ public class RegexiveOLC1 {
         // TODO code application logic here
         System.out.println("Hola esto es regexive");
         
-        Interfaz pantallaInicial = new Interfaz();
-        pantallaInicial.setVisible(true);
+        //Interfaz pantallaInicial = new Interfaz();
+        //pantallaInicial.setVisible(true);
         
         
+        Stack pila = new Stack();
+        String uno = "String1";
+        pila.push(uno);
+        pila.push("String2");
+        pila.push("String3");
+        pila.push("String4");
+        pila.push("String5");
+        pila.push("String6");
+        pila.push("String7");
+        pila.push("String8");
+        pila.push("String9");
+        
+        
+        System.out.println(pila.get(0));
+        System.out.println(pila.lastElement());
+        System.out.println(pila.capacity());
+        while (!pila.empty()) {   
+            if (pila.get(0).equals("String6")) {
+                pila.add("Añadido");
+            }
+            System.out.println("**"+pila.remove(0));
+        }
+ 
+        pila.push("String1");
+        pila.push("String2");
+        pila.push("String3");
+        pila.push("String4");
+        pila.push("String5");
+        pila.push("String6");
+        pila.push("String7");
+        pila.push("String8");
+        pila.push("String9");
+        System.out.println("");
+        while (!pila.empty()) {            
+            System.out.println("****"+pila.pop());
+        }
         /*HashMap<Integer, ArrayList<String>> mapa = new HashMap<>();
         ArrayList<String> palabras = new ArrayList<>();
+        ArrayList<String> palabras2 = new ArrayList<>();
+        
         palabras.add("Hola");
         palabras.add("Como");
         palabras.add("Estas");
         palabras.add("?");
-        mapa.put(1, palabras);
         
-        mapa.get(1).add("PRUEBA");
-        System.out.println(mapa.get(2));
-        System.out.println("La direccion es esta: "+mapa.get(mapa));
+        palabras2.add("Hola2");
+        palabras2.add("Como2");
+        palabras2.add("Estas2");
+        palabras2.add("?2");
+        mapa.put(10, palabras);
+        
         /*
         ArrayList<String> palabras = new ArrayList<>();
         palabras.add("Palabra1");

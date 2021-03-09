@@ -503,12 +503,25 @@ public class Interfaz extends javax.swing.JFrame {
                 jTextAreaErrores.setText(errores);
                 jTextAreaErrores.setForeground(Color.GREEN);
                 for (Arbol Arbol : sintactico.Arboles) {
-                    System.out.println(Arbol.getNombre() + "\n");
-                    Arbol.recorrerArbol();
-                    System.out.println("\n\n\n");
-
+                    System.out.println(Arbol.getNombre());
+                    System.out.println("");
+                    
+                    System.out.println("--------------------------------------------");
+                    Arbol.generarEstados();
+                    
+                    System.out.println("--------------------------------------------");
+                    
+                    System.out.println("''''''''''''''''''''''''''''''''''''''''''''");
                     System.out.println(Arbol.realizarGrafica());
-                    System.out.println("\n\n******************************************");
+                    System.out.println("''''''''''''''''''''''''''''''''''''''''''''");
+                    
+                    System.out.println("******************************************");
+                    System.out.println("Terminales: ");
+                    for (int i = 0; i < Arbol.getTerminales().size(); i++) {
+                        System.out.print(Arbol.getTerminales().get(i)+",");
+                    }
+                    System.out.println("******************************************");
+                    
                 }
             }
         } catch (Exception ex) {

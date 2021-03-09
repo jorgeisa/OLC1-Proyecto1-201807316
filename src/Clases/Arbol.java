@@ -8,6 +8,7 @@ package Clases;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 /**
  *
  * @author Isaac
@@ -18,14 +19,20 @@ public class Arbol {
    private String graphArbol;
    private HashMap<Integer, ArrayList<NodoArbol>> siguientes;
    
-   private HashMap<String, ArrayList<Estado>> estados;
+   private HashMap<String, Estado> estados;
+   private ArrayList<String> terminales;
+   private int contadorEstados;
+   private Stack pilaEstados;
 
-    public Arbol(NodoArbol raiz, String nombre, HashMap<Integer, ArrayList<NodoArbol>> siguientes) {
+    public Arbol(NodoArbol raiz, String nombre, HashMap<Integer, ArrayList<NodoArbol>> siguientes, ArrayList<String> terminales) {
         this.raiz = raiz;
         this.nombre = nombre;
         this.graphArbol = "";
         this.siguientes = siguientes;
         this.estados = new HashMap<>();
+        this.terminales =  terminales;
+        this.contadorEstados = 0;
+        this.pilaEstados = new Stack();
     }
 
     public NodoArbol getRaiz() {
@@ -60,12 +67,36 @@ public class Arbol {
         this.siguientes = siguientes;
     }
 
-    public HashMap<String, ArrayList<Estado>> getEstados() {
+    public HashMap<String, Estado> getEstados() {
         return estados;
     }
 
-    public void setEstados(HashMap<String, ArrayList<Estado>> estados) {
+    public void setEstados(HashMap<String, Estado> estados) {
         this.estados = estados;
+    }
+
+    public ArrayList<String> getTerminales() {
+        return terminales;
+    }
+
+    public void setTerminales(ArrayList<String> terminales) {
+        this.terminales = terminales;
+    }
+
+    public int getContadorEstados() {
+        return contadorEstados;
+    }
+
+    public void setContadorEstados(int contadorEstados) {
+        this.contadorEstados = contadorEstados;
+    }
+
+    public Stack getPilaEstados() {
+        return pilaEstados;
+    }
+
+    public void setPilaEstados(Stack pilaEstados) {
+        this.pilaEstados = pilaEstados;
     }
     
     public String realizarGrafica(){
@@ -168,11 +199,117 @@ public class Arbol {
         return retorno;
     }
     
-    private void generarEstados(){
-        
+    public void generarEstados(){
+        generandoPrimerEstado(); // El primer estado se genhera por la primero de la Raiz
+        generarDemasEstados();
     }
     
+    private void generandoPrimerEstado(){
+        //Estados iniciales
+        String primerosNodos = "";
+        for (int i = 0; i < this.raiz.getPrimeros().size(); i++) {
+            if (i != this.raiz.getPrimeros().size()-1) {
+                primerosNodos += this.raiz.getPrimeros().get(i).getIdNodo()+",";
+            }else{
+                primerosNodos += this.raiz.getPrimeros().get(i).getIdNodo();
+            }
+        }
+        
+        Estado estadoUno = new Estado("S"+this.contadorEstados, primerosNodos, this.raiz.getPrimeros());
+        this.contadorEstados++;
+        this.estados.put(primerosNodos, estadoUno);
+        pilaEstados.add(estadoUno);
+    }
     
+    private void generarDemasEstados(){
+        while(!pilaEstados.isEmpty()){
+            // Al remover pila.remove(0)
+            // Al hacer un add se debe de realizar pila.add(object);
+            Estado estadoActual = (Estado)pilaEstados.get(0);
+            ArrayList<NodoArbol>  listaNodos = estadoActual.getListaNodos();
+            System.out.println("Estado De Pila: "+estadoActual.getNombre());
+            
+            // Para cada uno de los terminales
+            for (int i = 0; i < terminales.size(); i++) {
+                String terminalActual = terminales.get(i);
+                ArrayList<NodoArbol> nodosTemporales = new ArrayList<>();
+                // Evaluamos para cada uno de los nodos del estado
+                for (int j = 0; j < listaNodos.size(); j++) {
+                    String interiorNodo = listaNodos.get(j).getInterior();
+                    // Preguntamos si el interior del nodo es igual al terminal
+                    // Si es asi, entonces hay una transicion con ese terminal
+                    if (terminalActual.equals(interiorNodo)) {
+                        int idNodoActual = listaNodos.get(j).getIdNodo();
+                        ArrayList<NodoArbol> nodosSiguientesActuales = this.siguientes.get(idNodoActual);
+                        //Verificar si un nodo de la lista de siguientes
+                        //No exista en el temporal
+                        for (NodoArbol nodoSiguiente : nodosSiguientesActuales) {
+                            if (!nodosTemporales.contains(nodoSiguiente)) {
+                                nodosTemporales.add(nodoSiguiente);
+                            }
+                        }
+                    }
+                }
+                
+                // Hago la llave de mi hashmap
+                String nodosEstadoNuevo = "";
+                for (int z = 0; z< nodosTemporales.size(); z++) {
+                    if (z != nodosTemporales.size()-1) {
+                        nodosEstadoNuevo += nodosTemporales.get(z).getIdNodo()+",";
+                    }else{
+                        nodosEstadoNuevo += nodosTemporales.get(z).getIdNodo();
+                    }
+                }
+                System.out.println("--------------------NODOS TEMPORALES----------------");
+                System.out.println(nodosEstadoNuevo);
+                
+                // Evaluo si es un estado valido o no lo es
+                if (!nodosEstadoNuevo.equals("")) {
+                    // Evaluo si el estado ya existe o es uno nuevo con la llave realizada
+                    if (!estados.containsKey(nodosEstadoNuevo)) {
+
+                        Estado estadoNuevo = new Estado("S"+this.contadorEstados, nodosEstadoNuevo, nodosTemporales);
+                        Transicion nuevaTransicion = new Transicion(terminalActual, estadoNuevo);
+                        estados.put(nodosEstadoNuevo, estadoNuevo);
+                        estados.get(estadoActual.getLlave()).getListaTransiciones().add(nuevaTransicion);
+
+                        pilaEstados.add(estadoNuevo);
+                        System.out.println("Se agrega nuevo estado como nueva transicion al estado actual");
+                        this.contadorEstados++;
+                    }else{
+                        Estado estadoExistente = estados.get(nodosEstadoNuevo);
+                        Transicion nuevaTransicion = new Transicion(terminalActual, estadoExistente);
+                        estados.get(estadoActual.getLlave()).getListaTransiciones().add(nuevaTransicion);
+                        System.out.println("Se agrega el mismo estado como nueva transicion");
+                    } 
+                }else{
+                    Estado estadoNoExistente = new Estado("SINV", "SINV", nodosTemporales);
+                    Transicion nuevaTransicion = new Transicion(terminalActual, estadoNoExistente);
+                    estados.get(estadoActual.getLlave()).getListaTransiciones().add(nuevaTransicion);
+                    System.out.println("Se agrega al estado actual una transicion con estado invalido");
+                }
+            }
+            pilaEstados.remove(0);
+        }
+    }
+    
+    private void imprimirTransiciones(){
+        System.out.println("--------------TRANSICIIONES--------------------");
+        for (Map.Entry<String, Estado> estado : estados.entrySet()) {
+            String key = estado.getKey();
+            Estado val = estado.getValue();
+            System.out.println("\n*****Estado Actual: "+val.getNombre()+", Llave Asociada: "+key+"*****");
+            System.out.println("\tNodos Asociados: ");
+            for (NodoArbol nodo : val.getListaNodos()) {
+                System.out.print("\t"+nodo.getIdNodo()+",");
+            }
+            System.out.println("\nTransiciones Del Estado: ");
+            for (Transicion transicion : val.getListaTransiciones()) {
+                System.out.println("\tNombre (terminal) Transicion: "+transicion.getNombreTransicion());
+                System.out.println("\tNombre Estado: "+transicion.getEstado().getNombre());
+            }
+        }
+    }
     
     public void recorrerArbol(){
         recorrerArbol(this.raiz);

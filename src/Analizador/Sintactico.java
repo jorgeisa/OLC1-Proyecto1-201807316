@@ -191,6 +191,7 @@ public class Sintactico extends java_cup.runtime.lr_parser {
     
     public ArrayList<Excepcion> Excepciones = new ArrayList();
     public ArrayList<Arbol> Arboles = new ArrayList();
+    public ArrayList<String> terminales = new ArrayList();
     public HashMap<Integer, ArrayList<NodoArbol>> hojas = new HashMap<>();
     public boolean erroresS = false;
     Enum enumError;
@@ -442,7 +443,7 @@ class CUP$Sintactico$actions {
 		int dleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int dright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String d = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		contadorNodos++; RESULT= new Arbol(new NodoArbol(contadorNodosN, ".", new NodoArbol(contadorNodos, "º", hojas), c, hojas), a, hojas); hojas = new HashMap<>(); contadorNodos = 0; contadorNodosN=9000;
+		contadorNodos++; RESULT= new Arbol(new NodoArbol(contadorNodosN, ".", new NodoArbol(contadorNodos, "º", hojas), c, hojas), a, hojas, terminales); hojas = new HashMap<>(); terminales = new ArrayList(); contadorNodos = 0; contadorNodosN=9000;
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("conjuntoEr",7, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-3)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -535,7 +536,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);
+		 if(!terminales.contains(a)){terminales.add(a);}  contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("notacionEr",8, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -547,7 +548,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).value;
-		 contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);
+		 if(!terminales.contains(a)){terminales.add(a);} contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("notacionEr",8, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-2)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -559,7 +560,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);
+		 if(!terminales.contains(a)){terminales.add(a);} contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("notacionEr",8, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -571,7 +572,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);
+		 if(!terminales.contains(a)){terminales.add(a);} contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("notacionEr",8, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
@@ -583,7 +584,7 @@ class CUP$Sintactico$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
-		 contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);
+		 if(!terminales.contains(a)){terminales.add(a);} contadorNodos++; RESULT= new NodoArbol(contadorNodos, a, hojas);
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("notacionEr",8, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
           return CUP$Sintactico$result;
