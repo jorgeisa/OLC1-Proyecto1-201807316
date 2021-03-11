@@ -13,7 +13,7 @@ PRUEBA -> . . . * | {aa} {bb} {aa} {bb} {bb};
 
 %%
 %%
-ªªª
+
 EXP5 : "\'cadena entre comilla simple\'";
 P1 : "P-385fde"; // bueno
 P1 : "P388fdc"; // bueno
