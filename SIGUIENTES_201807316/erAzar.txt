@@ -1,5 +1,0 @@
-
-
-Digraph F{
-node[shape="record"];
-nodo8000[label="{Nodo|1|2|3|4}|{{Siguientes}|{1,2,3}|{2,3,4}|{2,3,4}|}"];}

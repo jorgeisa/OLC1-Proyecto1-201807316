@@ -1,7 +1,0 @@
-digraph G {
-
-node [shape=record];
-rankdir = "TB";
-b [label = 
-"|{Estados|S0-[1]|S1-[2,3,4,5,6]|S2-[2,3,4,5,6,7]|S3-[8]}|{\'|S1|SINV|S3|SINV}|{\\n|SINV|S2|S2|SINV}|{minus|SINV|S2|S2|SINV}|{mayus|SINV|S2|S2|SINV}|{digito|SINV|S2|S2|SINV}|{ |SINV|S2|S2|SINV}|"];
-}
