@@ -33,4 +33,29 @@ public class Afnd {
     public void setAfndGraph(String AfndGraph) {
         this.AfndGraph = AfndGraph;
     }
+    
+    // a = izquierda , b = derecha
+    public void concatenacion(String a, String b){
+        String concatenacion = "";
+        concatenacion += 
+                "node [shape=\"circle\"];\n" +
+                "0 -> 1 [label=\"a\"];\n" +
+                "1 -> 2 [label=\"b\"];";
+    }
+    
+    public void disyuncion(){
+        
+    }
+    
+    public void unaMasVeces(){
+        
+    }
+    
+    public void ceroMasVeces(){
+        
+    }
+    
+    public void ceroUnaVez(){
+        
+    }
 }

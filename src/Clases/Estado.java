@@ -71,8 +71,4 @@ public class Estado {
     public void setEstadoAceptacion(boolean estadoAceptacion) {
         this.estadoAceptacion = estadoAceptacion;
     }
-    
-    
-
-    
 }

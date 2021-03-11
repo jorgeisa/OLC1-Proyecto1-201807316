@@ -32,8 +32,15 @@ public class RegexiveOLC1 {
         
         //Interfaz pantallaInicial = new Interfaz();
         //pantallaInicial.setVisible(true);
-        
-        
+        String prueba = "S3,";
+        //System.out.println(prueba.substring(prueba.length()-1));
+        if (prueba.substring(prueba.length()-1).equals(",")) {
+            prueba = prueba.substring(0, prueba.length()-1);
+            System.out.println(prueba);
+            prueba = prueba + ";";
+            System.out.println(prueba);
+        }
+        /*
         Stack pila = new Stack();
         String uno = "String1";
         pila.push(uno);
@@ -69,7 +76,7 @@ public class RegexiveOLC1 {
         System.out.println("");
         while (!pila.empty()) {            
             System.out.println("****"+pila.pop());
-        }
+        }*/
         /*HashMap<Integer, ArrayList<String>> mapa = new HashMap<>();
         ArrayList<String> palabras = new ArrayList<>();
         ArrayList<String> palabras2 = new ArrayList<>();

@@ -502,35 +502,38 @@ public class Interfaz extends javax.swing.JFrame {
                 errores = "No hay errores Lexicos o Sintacticos!! ^-^\n\n";
                 jTextAreaErrores.setText(errores);
                 jTextAreaErrores.setForeground(Color.GREEN);
-                for (Arbol Arbol : sintactico.Arboles) {
-                    
-                    System.out.println("\n\n");
-                    System.out.println("{{{{{{{{{{{{{{{{{{{{{{{{"+Arbol.getNombre()+"{{{{{{{{{{{{{{{{{{{{{{{{");
-                    System.out.println("");
-                    
+                
+                this.reportes.reportesArboles(sintactico.Arboles);
+                /*for (Arbol Arbol : sintactico.Arboles) {
                     System.out.println("--------------------------------------------");
-                    Arbol.generarEstados();
+                    //Arbol.generarEstados();
                     System.out.println("--------------------------------------------");
                     System.out.println("");
                     System.out.println("''''''''''''''''''''''''''''''''''''''''''''");
-                    System.out.println(Arbol.realizarGrafica());
+                    //System.out.println(Arbol.realizarGrafica());
                     System.out.println("''''''''''''''''''''''''''''''''''''''''''''");
                     System.out.println("");
                     System.out.println("''''''''''''''''''''''''''''''''''''''''''''");
-                    System.out.println(Arbol.realizarGraficaTransiciones());
+                    //System.out.println(Arbol.realizarGraficaTransiciones());
                     System.out.println("''''''''''''''''''''''''''''''''''''''''''''");
                     System.out.println("");
                     System.out.println("******************************************");
                     System.out.println("Terminales: ");
-                    for (int i = 0; i < Arbol.getTerminales().size(); i++) {
-                        System.out.print(Arbol.getTerminales().get(i)+",");
-                    }
+                    //for (int i = 0; i < Arbol.getTerminales().size(); i++) {
+                    //    System.out.print(Arbol.getTerminales().get(i)+",");
+                    //}
                     System.out.println("******************************************");
                     System.out.println("");
                     System.out.println("////////////////////////////////////////////");
-                    System.out.println(Arbol.realizarGraficaAFD());
+                    //System.out.println(Arbol.realizarGraficaAFD());
                     System.out.println("////////////////////////////////////////////");
-                }
+                    
+                    System.out.println("");
+                    
+                    System.out.println("¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡");
+                    Arbol.recorrerArbol();
+                    System.out.println("¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡");
+                }*/
             }
         } catch (Exception ex) {
             System.out.println("Error fatal en compilacion de entrada");

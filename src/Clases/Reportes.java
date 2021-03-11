@@ -8,6 +8,7 @@ package Clases;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 /**
  *
@@ -149,5 +150,150 @@ public class Reportes {
             System.out.println("Error al crear Css tabla");
         }
         
+    }
+    
+    //REPORTES PARA TODOS LOS ARBOLES
+    public void reportesArboles(ArrayList<Arbol> listaArboles){
+        
+        String pathArboles = this.verificarExistenciaPath("ARBOLES_201807316", false);
+        String pathSiguientes = this.verificarExistenciaPath("SIGUIENTES_201807316", false);
+        String pathTransiciones = this.verificarExistenciaPath("TRANSICIONES_201807316", false);
+        String pathAFDs = this.verificarExistenciaPath("AFD_201807316", false);
+        
+        for (Arbol arbol : listaArboles) {
+            arbol.generarEstados();
+            this.reporteGraficaArbol(arbol, pathArboles);
+            this.reporteGraficaSiguientes(arbol, pathSiguientes);
+            this.reporteGraficaTransiciones(arbol, pathTransiciones);
+            this.reporteGraficaAFD(arbol, pathAFDs);
+        }
+    }
+    
+    // REPORTE ARBOLES - PNG, TXT
+    public void reporteGraficaArbol(Arbol arbol, String pathArboles){
+        System.out.println("");
+        System.out.println("Arbol"+arbol.getNombre());
+            
+        String nombreTxt = arbol.getNombre() + ".txt";
+        String nombrePng = arbol.getNombre() + ".png";
+        String graficaArbol = arbol.realizarGrafica();
+            
+            
+        // Creamos el archivo .txt para cada arbol
+        // Creamos el png con ese archivo txt
+        try {
+            String dirDot = pathArboles + "\\" + nombreTxt;
+            String dirPng = pathArboles + "\\" + nombrePng;
+                
+            PrintWriter writer = new PrintWriter(dirDot, "UTF-8");
+            writer.print(graficaArbol);
+            writer.close();
+                
+            String cmd = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot " + "-Tpng " + "-o " + " " + dirPng + " " + dirDot;
+            java.lang.Runtime rt = Runtime.getRuntime();
+            rt.exec(cmd);
+            System.out.println("Se creo el archivo de arbol: " + nombrePng + ", " + nombreTxt);
+                
+        } catch (Exception e) {
+                System.out.println("Error al crear la imagen de Graphviz - Arbol :"+ nombrePng);
+        }
+            
+        System.out.println("");
+    }
+    
+    // REPORTE SIGIENTES - PNG, TXT
+    public void reporteGraficaSiguientes(Arbol arbol, String pathSiguientes){
+        System.out.println("");
+        System.out.println("Siguientes -" + arbol.getNombre());
+            
+        String nombreTxt = arbol.getNombre() + ".txt";
+        String nombrePng = arbol.getNombre() + ".png";
+        String graficaSiguientes = arbol.realizarSiguientes();
+            
+            
+        // Creamos el archivo .txt para cada arbol
+        // Creamos el png con ese archivo txt
+        try {
+            String dirDot = pathSiguientes + "\\" + nombreTxt;
+            String dirPng = pathSiguientes + "\\" + nombrePng;
+                
+            PrintWriter writer = new PrintWriter(dirDot, "UTF-8");
+            writer.print(graficaSiguientes);
+            writer.close();
+                
+            String cmd = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot " + "-Tpng " + "-o " + " " + dirPng + " " + dirDot;
+            java.lang.Runtime rt = Runtime.getRuntime();
+            rt.exec(cmd);
+            System.out.println("Se creo el archivo de siguientes: " + nombrePng + ", " + nombreTxt);
+                
+        } catch (Exception e) {
+                System.out.println("Error al crear la imagen de Graphviz - Siguientes: "+ nombrePng);
+        }
+            
+        System.out.println("");
+    }
+    
+    // REPORTE TRANSICIONES - PNG, TXT
+    public void reporteGraficaTransiciones(Arbol arbol, String pathTransiciones){
+        System.out.println("");
+        System.out.println("Transiciones -" + arbol.getNombre());
+            
+        String nombreTxt = arbol.getNombre() + ".txt";
+        String nombrePng = arbol.getNombre() + ".png";
+        String graficaTransiciones = arbol.realizarGraficaTransiciones();
+            
+            
+        // Creamos el archivo .txt para cada arbol
+        // Creamos el png con ese archivo txt
+        try {
+            String dirDot = pathTransiciones + "\\" + nombreTxt;
+            String dirPng = pathTransiciones + "\\" + nombrePng;
+                
+            PrintWriter writer = new PrintWriter(dirDot, "UTF-8");
+            writer.print(graficaTransiciones);
+            writer.close();
+                
+            String cmd = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot " + "-Tpng " + "-o " + " " + dirPng + " " + dirDot;
+            java.lang.Runtime rt = Runtime.getRuntime();
+            rt.exec(cmd);
+            System.out.println("Se creo el archivo de Transiciones: " + nombrePng + ", " + nombreTxt);
+                
+        } catch (Exception e) {
+                System.out.println("Error al crear la imagen de Graphviz - Transiciones: "+ nombrePng);
+        }
+            
+        System.out.println("");
+    }
+    
+    // REPORTE AFD - PNG, TXT
+    public void reporteGraficaAFD(Arbol arbol, String pathAfd){
+        System.out.println("");
+        System.out.println("AFD -" + arbol.getNombre());
+            
+        String nombreTxt = arbol.getNombre() + ".txt";
+        String nombrePng = arbol.getNombre() + ".png";
+        String graficaAFD = arbol.realizarGraficaAFD();
+            
+            
+        // Creamos el archivo .txt para cada arbol
+        // Creamos el png con ese archivo txt
+        try {
+            String dirDot = pathAfd + "\\" + nombreTxt;
+            String dirPng = pathAfd + "\\" + nombrePng;
+                
+            PrintWriter writer = new PrintWriter(dirDot, "UTF-8");
+            writer.print(graficaAFD);
+            writer.close();
+                
+            String cmd = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot " + "-Tpng " + "-o " + " " + dirPng + " " + dirDot;
+            java.lang.Runtime rt = Runtime.getRuntime();
+            rt.exec(cmd);
+            System.out.println("Se creo el archivo de AFD: " + nombrePng + ", " + nombreTxt);
+                
+        } catch (Exception e) {
+                System.out.println("Error al crear la imagen de Graphviz - AFD: "+ nombrePng);
+        }
+            
+        System.out.println("");
     }
 }

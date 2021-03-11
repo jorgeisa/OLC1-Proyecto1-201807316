@@ -23,7 +23,10 @@ public class Arbol {
    private ArrayList<String> terminales;
    private int contadorEstados;
    private Stack pilaEstados;
-
+   
+   private Stack pilaAfn;
+   private int contadorAfn;
+   
     public Arbol(NodoArbol raiz, String nombre, HashMap<Integer, ArrayList<NodoArbol>> siguientes, ArrayList<String> terminales) {
         this.raiz = raiz;
         this.nombre = nombre;
@@ -32,7 +35,9 @@ public class Arbol {
         this.estados = new HashMap<>();
         this.terminales =  terminales;
         this.contadorEstados = 0;
+        this.contadorAfn = 0;
         this.pilaEstados = new Stack();
+        this.pilaAfn = new Stack();
     }
 
     public NodoArbol getRaiz() {
@@ -91,6 +96,22 @@ public class Arbol {
         this.contadorEstados = contadorEstados;
     }
 
+    public Stack getPilaAfn() {
+        return pilaAfn;
+    }
+
+    public void setPilaAfn(Stack pilaAfn) {
+        this.pilaAfn = pilaAfn;
+    }
+
+    public int getContadorAfn() {
+        return contadorAfn;
+    }
+
+    public void setContadorAfn(int contadorAfn) {
+        this.contadorAfn = contadorAfn;
+    }
+
     public Stack getPilaEstados() {
         return pilaEstados;
     }
@@ -105,7 +126,6 @@ public class Arbol {
                 + "node[shape=\"record\"];\n";
         grafica += realizarNodos(this.raiz);
         grafica += realizarUniones(this.raiz);
-        grafica += realizarSiguientes();
         grafica += "}";
         return grafica;
     }
@@ -160,10 +180,10 @@ public class Arbol {
         return grafica;
     }
     
-    private String realizarSiguientes(){
+    public String realizarSiguientes(){
         String graphLlaves = "{Nodo|";
         String graphValores = "{{Siguientes}|";
-        String retorno = "\n\nsubgraph F{\n" +
+        String retorno = "\n\nDigraph F{\n" +
                          "node[shape=\"record\"];\n";
         //"node1" [label = "{Nodo|1|2|3|4|5}|{{Nodo}|{Nodo}|{Nodo}|{Nodo}|{Nodo}|{Nodo}}"];
         
@@ -276,12 +296,10 @@ public class Arbol {
             
             // Establecer estados de aceptacion
             if (val.isEstadoAceptacion()) {
-                if (cuentaEstados != this.estados.size()-1) {
-                    nodosAceptacion+=val.getNombre()+",";
-                }else{
-                    nodosAceptacion+=val.getNombre()+";";
-                }
+                nodosAceptacion+=val.getNombre()+",";
             }
+            
+            //Si tiene una coma al final solo reemplazamos
             
             for (Transicion transicion : val.getListaTransiciones()) {
                 if (!transicion.getEstado().getNombre().equals("SINV")) {
@@ -300,6 +318,12 @@ public class Arbol {
             cuentaEstados++;
         }
         
+        // Le quitamos la coma al string de estados de aceptacion y colocamos un ;
+        if (nodosAceptacion.substring(nodosAceptacion.length()-1).equals(",")) {
+            nodosAceptacion = nodosAceptacion.substring(0, nodosAceptacion.length()-1);
+            nodosAceptacion = nodosAceptacion + ";";
+        }
+        
         graphAfd +="digraph G{\n"+
                  "node [shape = doublecircle]; " + nodosAceptacion + "\n"+
                  "node [shape = circle];\n" +
@@ -314,7 +338,7 @@ public class Arbol {
     public void generarEstados(){
         this.generandoPrimerEstado(); // El primer estado se genhera por la primero de la Raiz
         this.generarDemasEstados();
-        this.imprimirTransiciones();
+        //this.imprimirTransiciones();
     }
     
     private void generandoPrimerEstado(){
@@ -438,16 +462,88 @@ public class Arbol {
     }
     
     public void recorrerArbol(){
-        recorrerArbol(this.raiz);
+        String graphAfn = "";
+        graphAfn = recorrerArbol(this.raiz, graphAfn);
+        System.out.println("\n\n\n");
+        System.out.println(graphAfn);
+        System.out.println("\n\n\n");
+        System.out.println("EL STACK ES:");
+        System.out.println(this.pilaAfn);
     }
     
-    private void recorrerArbol(NodoArbol temp){
+    private String recorrerArbol(NodoArbol temp, String concatenado){
         if(temp != null){
-            System.out.println(temp.getInterior());
-            System.out.println(temp.getIdNodo());
-            recorrerArbol(temp.getIzquierda());
-            recorrerArbol(temp.getDerecha());
-            
+            if (this.raiz!=temp && this.raiz.getDerecha()!=temp) {
+                System.out.print(temp.getInterior()+" ");
+                pilaAfn.add(temp.getInterior());
+                
+                switch(temp.getInterior()){
+                    case ".":
+                        if (temp.getIzquierda().isEvaluarHoja() && temp.getDerecha().isEvaluarHoja()) {
+                            concatenado += this.contadorAfn +"->"+ (this.contadorAfn+1) +"[label=\""+temp.getIzquierda().getInterior()+"\"];\n";
+                            concatenado += (this.contadorAfn+1) + "->" + (this.contadorAfn+2) +"[label=\""+temp.getDerecha().getInterior()+"\"];\n";
+                            this.contadorAfn += 2;
+                        }else if (temp.getIzquierda().isEvaluarHoja()) {
+                            concatenado += this.contadorAfn +"->"+ (this.contadorAfn+1) + "[label=\""+temp.getIzquierda().getInterior()+"\"];\n";
+                            this.contadorAfn += 1;
+                        }
+                        break;
+                    case "|":
+                        concatenado += this.contadorAfn+"->"+(this.contadorAfn+1)+"[label=\"ε\"];\n";
+                        concatenado += (this.contadorAfn+1)+"->"+(this.contadorAfn+2)+"[label=\"ε\"];\n";
+                        this.contadorAfn += 2;
+                        
+                        if (temp.getIzquierda().isEvaluarHoja() && temp.getDerecha().isEvaluarHoja()) {
+                            concatenado += this.contadorAfn+"->"+(this.contadorAfn+1)+"[label=\""+temp.getIzquierda().getInterior()+"\"];\n";
+                            concatenado += (this.contadorAfn+1)+"->"+(this.contadorAfn+2)+"[label=\""+temp.getDerecha().getInterior()+"\"];\n";
+                            concatenado += (this.contadorAfn+1)+"->"+(this.contadorAfn+3)+"[label=\"ε\"];\n";
+                            concatenado += (this.contadorAfn+2)+"->"+(this.contadorAfn+3)+"[label=\"ε\"];\n";
+                            this.contadorAfn += 3;
+                        }else if (temp.getIzquierda().isEvaluarHoja()) {
+                            concatenado += this.contadorAfn+"->"+(this.contadorAfn+1)+"[label=\""+temp.getIzquierda().getInterior()+"\"];\n";
+                            concatenado += (this.contadorAfn+1)+"->"+(this.contadorAfn+2)+"[label=\"ε\"];\n";
+                            this.contadorAfn += 2;
+                        }
+                        break;
+                    case "*":
+                        concatenado += this.contadorAfn+"->"+(this.contadorAfn+1)+"[label=\"ε\"];\n";
+                        
+                        if (temp.getIzquierda().isEvaluarHoja()) {
+                            concatenado += (this.contadorAfn+1)+"->"+(this.contadorAfn+2)+"[label=\""+temp.getIzquierda().getInterior()+"\"];\n";
+                            concatenado += (this.contadorAfn+2)+"->"+(this.contadorAfn+1)+"[label=\"ε\"];\n";
+                            concatenado += (this.contadorAfn+2)+"->"+(this.contadorAfn+3)+"[label=\"ε\"];\n";
+                            concatenado += (this.contadorAfn)+"->"+(this.contadorAfn+3)+"[label=\"ε\"];\n";
+                            this.contadorAfn += 2;
+                        }
+                        this.contadorAfn += 1;
+                        
+                        break;
+                    case "+":
+                        concatenado += this.contadorAfn+"->"+(this.contadorAfn+1)+"[label=\"ε\"];\n";
+                        this.contadorAfn += 1;
+                        if (temp.getIzquierda().isEvaluarHoja()) {
+                            concatenado += this.contadorAfn+"->"+(this.contadorAfn+1)+"[label=\""+temp.getIzquierda().getInterior()+"\"];\n";
+                            concatenado += (this.contadorAfn+1) + "->" + (this.contadorAfn+2) + "[label=\"ε\"];\n";
+                            this.contadorAfn += 2;
+                        }
+                        break;
+                    case "?":
+                        concatenado += this.contadorAfn+"->"+(this.contadorAfn+1)+"[label=\"ε\"];\n";
+                        
+                        if (temp.getIzquierda().isEvaluarHoja()) {
+                            concatenado += (this.contadorAfn+1)+"->"+(this.contadorAfn+2)+"[label=\""+temp.getIzquierda().getInterior()+"\"];\n";
+                            concatenado += (this.contadorAfn+2) + "->" + (this.contadorAfn+1) + "[label=\"ε\"];\n";
+                            concatenado += (this.contadorAfn+2) + "->" + (this.contadorAfn+3) + "[label=\"ε\"];\n";
+                            this.contadorAfn += 2;
+                        }
+                        
+                        this.contadorAfn += 1;
+                        break;
+                }
+            }
+            concatenado = recorrerArbol(temp.getIzquierda(), concatenado);
+            concatenado = recorrerArbol(temp.getDerecha(), concatenado);
         }
+        return concatenado;
     }
 }

@@ -7,9 +7,10 @@ CONJ: digito -  > 0~9;
 CONJ: posibles -   > P, C, O; 
 
 
-PRUEBA -> . . . * | {aa} {bb} {aa} {bb} {bb};
+
 EXP5  -  >  . \' . + | | | | \n {minus} {mayus} {digito} " " \';
 Pl -   >  . {posibles} . ? "-"  . {digito} . {digito} . {digito}  . {letra}  . {letra} {letra};
+PRUEBA -> . . . * | {aa} {bb} {aa} {bb} {bb};
 
 %%
 %%
