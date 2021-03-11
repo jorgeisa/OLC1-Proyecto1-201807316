@@ -9,6 +9,7 @@ import Clases.Arbol;
 import Clases.Excepcion;
 import Clases.Reportes;
 import java.awt.Color;
+import java.awt.Image;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
@@ -18,8 +19,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -34,6 +40,28 @@ public class Interfaz extends javax.swing.JFrame {
     String nombreAbierto = "";
     String cadenaAbierto = "";
     Reportes reportes = new Reportes();
+    ArrayList<Arbol> arbolesGlobales = new ArrayList<>();
+    
+    public ArrayList<String> arbolesGenerados = new ArrayList<>();
+    public ArrayList<String> afndGenerados= new ArrayList<>();
+    public ArrayList<String> siguientesGenerados = new ArrayList<>();
+    public ArrayList<String> transicionesGenerados = new ArrayList<>();
+    public ArrayList<String> afdGenerados = new ArrayList<>();
+    public ArrayList<String> erroresGenerados = new ArrayList<>();
+    public ArrayList<String> salidasGenerados = new ArrayList<>();
+    
+    public String rutaArboles = new File("ARBOLES_201807316").getAbsolutePath();
+    public String rutaAfnd = new File("AFND_201807316").getAbsolutePath();
+    public String rutaSiguientes = new File("SIGUIENTES_201807316").getAbsolutePath();
+    public String rutaTransiciones = new File("TRANSICIONES_201807316").getAbsolutePath();
+    public String rutaAfd = new File("AFD_201807316").getAbsolutePath();
+    public String rutaErrores = new File("ERRORES_201807316").getAbsolutePath();
+    public String rutaSalidas = new File("SALIDAS_201807316").getAbsolutePath();
+    
+    String rutaImagen = "";
+    
+
+
     public Interfaz() {
         initComponents();
         setLocationRelativeTo(null);
@@ -57,15 +85,14 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTree1 = new javax.swing.JTree();
-        jPanel1 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        comboBoxReportes = new javax.swing.JComboBox<>();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextAreaErrores = new javax.swing.JTextArea();
         jButton3_Limpiar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel_AvisoCambio = new javax.swing.JLabel();
+        comboBoxArchivosReportes = new javax.swing.JComboBox<>();
+        jLabelImagen = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
@@ -98,6 +125,11 @@ public class Interfaz extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextAreaArchivo);
 
         jButton1_Automatas.setText("Automatas");
+        jButton1_Automatas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1_AutomatasActionPerformed(evt);
+            }
+        });
 
         jButton2_Analizar.setText("Analizar");
         jButton2_Analizar.addActionListener(new java.awt.event.ActionListener() {
@@ -113,21 +145,12 @@ public class Interfaz extends javax.swing.JFrame {
         jTextArea2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         jScrollPane2.setViewportView(jTextArea2);
 
-        jTree1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jScrollPane3.setViewportView(jTree1);
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 299, Short.MAX_VALUE)
-        );
+        comboBoxReportes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Arboles", "AFND", "Siguientes", "Transiciones", "AFD", "Errores", "Salidas" }));
+        comboBoxReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBoxReportesActionPerformed(evt);
+            }
+        });
 
         jTextAreaErrores.setColumns(20);
         jTextAreaErrores.setRows(5);
@@ -145,6 +168,12 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel_AvisoCambio.setBackground(new java.awt.Color(153, 153, 153));
         jLabel_AvisoCambio.setForeground(new java.awt.Color(255, 0, 51));
+
+        comboBoxArchivosReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBoxArchivosReportesActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
@@ -223,17 +252,18 @@ public class Interfaz extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton2_Analizar, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton3_Limpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jButton3_Limpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(115, 115, 115))
+                    .addComponent(jScrollPane1))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE))
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(comboBoxReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(comboBoxArchivosReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelImagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -244,30 +274,32 @@ public class Interfaz extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
                     .addComponent(jLabel_AvisoCambio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(comboBoxReportes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboBoxArchivosReportes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 4, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabelImagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton3_Limpiar)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jButton1_Automatas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton2_Analizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(3, 3, 3)
-                        .addComponent(jLabel2))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane4))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(25, 25, 25))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -276,6 +308,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         System.out.println("Opcion abrir Archivo");
+        this.limpiarInterfaz();
         abrirArchivo();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -305,15 +338,124 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jButton3_LimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3_LimpiarActionPerformed
         // Boton de Limpiar
-        jTextAreaArchivo.setText("");
-        pathAbierto ="";
-        System.out.println("Se ha limpiado");
+        System.out.println(this.rutaArboles);
+        System.out.println(this.rutaAfd);
+        System.out.println(this.rutaSiguientes);
+        System.out.println(this.rutaTransiciones);
+        System.out.println(this.rutaAfd);
+        System.out.println(this.rutaErrores);
+        System.out.println(this.rutaSalidas);
+        this.limpiarInterfaz();
     }//GEN-LAST:event_jButton3_LimpiarActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // NUEVO ARCHIVO
         guardarArchivoComo();
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jButton1_AutomatasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1_AutomatasActionPerformed
+        if (!this.arbolesGlobales.isEmpty()) {
+            System.out.println("Su lista de arboles eta vacia!");
+            this.afdGenerados = this.reportes.reportesGraficaAFD(this.arbolesGlobales);
+        }else{
+            System.out.println("Lista de Arboles Vacia");
+        }
+    }//GEN-LAST:event_jButton1_AutomatasActionPerformed
+
+    private void comboBoxReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxReportesActionPerformed
+        switch(comboBoxReportes.getSelectedIndex()){
+            case 0:
+                System.out.println("Arboles");
+                
+                comboBoxArchivosReportes.removeAllItems();
+                for (String arbolG : this.arbolesGenerados) {
+                    comboBoxArchivosReportes.addItem(arbolG);
+                }
+                break;
+            case 1:
+                System.out.println("AFND");
+                comboBoxArchivosReportes.removeAllItems();
+                break;
+            case 2:
+                System.out.println("Siguientes");
+                comboBoxArchivosReportes.removeAllItems();
+                for (String siguiente : this.siguientesGenerados) {
+                    comboBoxArchivosReportes.addItem(siguiente);
+                }
+                break;
+            case 3:
+                System.out.println("Transiciones");
+                
+                comboBoxArchivosReportes.removeAllItems();
+                for (String transicion : this.transicionesGenerados) {
+                    comboBoxArchivosReportes.addItem(transicion);
+                }
+                break;
+            case 4:
+                System.out.println("AFD");
+                comboBoxArchivosReportes.removeAllItems();
+                for (String afd : this.afdGenerados) {
+                    comboBoxArchivosReportes.addItem(afd);
+                }
+                break;
+            case 5:
+                System.out.println("Errores");
+                comboBoxArchivosReportes.removeAllItems();
+                for (String error : this.erroresGenerados) {
+                    comboBoxArchivosReportes.addItem(error);
+                }
+                break;
+            case 6:
+                System.out.println("Salidas");
+                comboBoxArchivosReportes.removeAllItems();
+                break;
+        }
+    }//GEN-LAST:event_comboBoxReportesActionPerformed
+
+    private void comboBoxArchivosReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxArchivosReportesActionPerformed
+        //System.out.println(this.rutaImagen +"\\"+ comboBoxArchivosReportes.getSelectedItem());
+        String ruta = "";
+        int opcion=0;
+        switch(comboBoxReportes.getSelectedIndex()){
+            case 0:
+                ruta = this.rutaArboles +"\\"+ comboBoxArchivosReportes.getSelectedItem();
+                break;
+            case 1:
+                ruta = this.rutaAfnd +"\\"+ comboBoxArchivosReportes.getSelectedItem();
+                break;
+            case 2:
+                ruta = this.rutaSiguientes +"\\"+ comboBoxArchivosReportes.getSelectedItem();
+                break;
+            case 3:
+                ruta = this.rutaTransiciones +"\\"+ comboBoxArchivosReportes.getSelectedItem();
+                break;
+            case 4:
+                ruta = this.rutaAfd +"\\"+ comboBoxArchivosReportes.getSelectedItem();
+                break;
+            case 5:
+                opcion = 1;
+                ruta = this.rutaErrores +"\\"+ comboBoxArchivosReportes.getSelectedItem();
+                System.out.println(ruta);
+                break;
+            case 6:
+                opcion = 2;
+                ruta = this.rutaSalidas +"\\"+ comboBoxArchivosReportes.getSelectedItem();
+                break;
+        }
+        if (opcion != 1) {
+            ImageIcon icon = new ImageIcon(ruta);
+            Icon icono = new ImageIcon(icon.getImage().getScaledInstance(this.jLabelImagen.getWidth(), this.jLabelImagen.getHeight(), Image.SCALE_DEFAULT));
+            this.jLabelImagen.setIcon(icono);
+        }else if(opcion == 1){
+            try {
+                Runtime.getRuntime().exec("C:\\Program Files\\Mozilla Firefox\\firefox.exe " +ruta);
+            } catch (IOException ex) {
+                System.out.println("error");
+            }
+        }else{
+            System.out.println("no implementado :,v");
+        }
+    }//GEN-LAST:event_comboBoxArchivosReportesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -348,6 +490,15 @@ public class Interfaz extends javax.swing.JFrame {
                 new Interfaz().setVisible(true);
             }
         });
+    }
+    
+    //Limpiar Variables y Txt
+    public void limpiarInterfaz(){
+        // Boton de Limpiar
+        jTextAreaArchivo.setText("");
+        pathAbierto ="";
+        System.out.println("Se ha limpiado");
+        this.arbolesGlobales = new ArrayList<>();
     }
     
     
@@ -425,15 +576,6 @@ public class Interfaz extends javax.swing.JFrame {
                 salida.write(textoEscritura);
                 System.out.println(archivo.getName() + " Nombre del archivo");
                 
-                
-                /*//Realizar el archivo en la ruta por defecto
-                String pathDefecto = new File(archivo.getName()).getAbsolutePath();
-                File archivoDefecto = new File(pathDefecto);
-                BufferedWriter salidaDefecto = new BufferedWriter(new FileWriter(archivoDefecto));
-                salidaDefecto.write(textoEscritura);
-                
-                System.out.println(pathDefecto + " Es el directorio del proyecto");
-                salidaDefecto.close();*/
                 System.out.println(fc.getSelectedFile());
                 salida.close();
             }
@@ -493,8 +635,11 @@ public class Interfaz extends javax.swing.JFrame {
                     }
                 }   
                 errores += "\n\n";
+                String reporteG = reportes.reporteErrores(lexico.Excepciones, sintactico.Excepciones, nombreAbierto);
                 
-                reportes.reporteErrores(lexico.Excepciones, sintactico.Excepciones, nombreAbierto);
+                if (!reporteG.equals("")) {
+                    this.erroresGenerados.add(reporteG);
+                }
                 
                 jTextAreaErrores.setText(errores);
                 jTextAreaErrores.setForeground(Color.red);
@@ -503,37 +648,15 @@ public class Interfaz extends javax.swing.JFrame {
                 jTextAreaErrores.setText(errores);
                 jTextAreaErrores.setForeground(Color.GREEN);
                 
-                this.reportes.reportesArboles(sintactico.Arboles);
-                /*for (Arbol Arbol : sintactico.Arboles) {
-                    System.out.println("--------------------------------------------");
-                    //Arbol.generarEstados();
-                    System.out.println("--------------------------------------------");
-                    System.out.println("");
-                    System.out.println("''''''''''''''''''''''''''''''''''''''''''''");
-                    //System.out.println(Arbol.realizarGrafica());
-                    System.out.println("''''''''''''''''''''''''''''''''''''''''''''");
-                    System.out.println("");
-                    System.out.println("''''''''''''''''''''''''''''''''''''''''''''");
-                    //System.out.println(Arbol.realizarGraficaTransiciones());
-                    System.out.println("''''''''''''''''''''''''''''''''''''''''''''");
-                    System.out.println("");
-                    System.out.println("******************************************");
-                    System.out.println("Terminales: ");
-                    //for (int i = 0; i < Arbol.getTerminales().size(); i++) {
-                    //    System.out.print(Arbol.getTerminales().get(i)+",");
-                    //}
-                    System.out.println("******************************************");
-                    System.out.println("");
-                    System.out.println("////////////////////////////////////////////");
-                    //System.out.println(Arbol.realizarGraficaAFD());
-                    System.out.println("////////////////////////////////////////////");
-                    
-                    System.out.println("");
-                    
-                    System.out.println("¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡");
-                    Arbol.recorrerArbol();
-                    System.out.println("¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡");
-                }*/
+                this.arbolesGlobales = new ArrayList();
+                this.arbolesGlobales = sintactico.Arboles;
+                
+                this.arbolesGenerados = this.reportes.reporteGraficaArboles(this.arbolesGlobales);
+                this.siguientesGenerados = this.reportes.reporteGraficaSiguientes(this.arbolesGlobales);
+                this.transicionesGenerados = this.reportes.reporteGraficaTransiciones(this.arbolesGlobales);
+                
+                jTextAreaErrores.setText(errores + "\nAnalisis Terminado!!");
+                jTextAreaErrores.setForeground(Color.GREEN);
             }
         } catch (Exception ex) {
             System.out.println("Error fatal en compilacion de entrada");
@@ -581,14 +704,16 @@ public class Interfaz extends javax.swing.JFrame {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> comboBoxArchivosReportes;
+    private javax.swing.JComboBox<String> comboBoxReportes;
     private javax.swing.JButton jButton1_Automatas;
     private javax.swing.JButton jButton2_Analizar;
     private javax.swing.JButton jButton3_Limpiar;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabelImagen;
     private javax.swing.JLabel jLabel_AvisoCambio;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -598,14 +723,11 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextAreaArchivo;
     private javax.swing.JTextArea jTextAreaErrores;
-    private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }

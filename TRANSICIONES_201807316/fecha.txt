@@ -1,0 +1,7 @@
+digraph G {
+
+node [shape=record];
+rankdir = "TB";
+b [label = 
+"|{Estados|S10-[11]|S0-[1]|S1-[2]|S2-[3]|S3-[4]|S4-[5]|S5-[6]|S6-[7]|S7-[8]|S8-[9]|S9-[10]}|{num|SINV|S1|S2|SINV|S4|S5|SINV|S7|S8|S9|S10}|{/|SINV|SINV|SINV|S3|SINV|SINV|S6|SINV|SINV|SINV|SINV}|"];
+}

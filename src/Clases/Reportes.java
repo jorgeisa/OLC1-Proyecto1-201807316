@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import regexiveolc1.Interfaz;
 /**
  *
  * @author Isaac
@@ -31,7 +32,7 @@ public class Reportes {
     
     // REPORTE DE ERRORES - HTML
 
-    public void reporteErrores(ArrayList<Excepcion> erroresL, ArrayList<Excepcion> erroresS, String nombreArchivo){
+    public String reporteErrores(ArrayList<Excepcion> erroresL, ArrayList<Excepcion> erroresS, String nombreArchivo){
         String pathDefecto = verificarExistenciaPath("ERRORES_201807316", true);
         
         //Quitarle el punto al nombre por defecto del archivo
@@ -45,9 +46,11 @@ public class Reportes {
             String interiorHtml = generarString(erroresL, erroresS);
             salida.write(interiorHtml);
             salida.close();
+            return nombreArchivo;
         } catch (Exception e) {
             System.out.println("ERROR AL CREAR HTML DE REPORTE ERRORES");
         }
+        return "";
     }
     
     private String generarString(ArrayList<Excepcion> erroresL, ArrayList<Excepcion> erroresS){
@@ -153,31 +156,68 @@ public class Reportes {
     }
     
     //REPORTES PARA TODOS LOS ARBOLES
-    public void reportesArboles(ArrayList<Arbol> listaArboles){
+    /*public void reportesArboles(ArrayList<Arbol> listaArboles){
         
         String pathArboles = this.verificarExistenciaPath("ARBOLES_201807316", false);
         String pathSiguientes = this.verificarExistenciaPath("SIGUIENTES_201807316", false);
         String pathTransiciones = this.verificarExistenciaPath("TRANSICIONES_201807316", false);
-        String pathAFDs = this.verificarExistenciaPath("AFD_201807316", false);
         
         for (Arbol arbol : listaArboles) {
             arbol.generarEstados();
             this.reporteGraficaArbol(arbol, pathArboles);
             this.reporteGraficaSiguientes(arbol, pathSiguientes);
             this.reporteGraficaTransiciones(arbol, pathTransiciones);
-            this.reporteGraficaAFD(arbol, pathAFDs);
         }
+    }*/
+    
+    public ArrayList<String> reporteGraficaArboles(ArrayList<Arbol> listaArboles){
+        ArrayList <String> arbolesGenerados = new ArrayList<>();
+        String pathArboles = this.verificarExistenciaPath("ARBOLES_201807316", false);
+        for (Arbol arbol : listaArboles) {
+            String arbolGenerado = this.reporteGraficaArbol(arbol, pathArboles);
+            if (!arbolGenerado.equals("")) {
+                arbolesGenerados.add(arbolGenerado);
+            }
+        }
+        return arbolesGenerados;
+    }
+    
+    public ArrayList<String> reporteGraficaSiguientes(ArrayList<Arbol> listaArboles){
+        ArrayList <String> siguientesGenerados = new ArrayList<>();
+        String pathSiguientes = this.verificarExistenciaPath("SIGUIENTES_201807316", false);
+        
+        for (Arbol arbol : listaArboles) {
+            String siguienteGenerado = this.reporteGraficaSiguientes(arbol, pathSiguientes);
+            if (!siguienteGenerado.equals("")) {
+                siguientesGenerados.add(siguienteGenerado);
+            }
+        }
+        return siguientesGenerados;
+    }
+    
+    public ArrayList<String> reporteGraficaTransiciones(ArrayList<Arbol> listaArboles){
+        ArrayList <String> transicionesGenerados = new ArrayList<>();
+        String pathTransiciones = this.verificarExistenciaPath("TRANSICIONES_201807316", false);
+        
+        for (Arbol arbol : listaArboles) {
+            arbol.generarEstados();
+            String transicionGenerada = this.reporteGraficaTransiciones(arbol, pathTransiciones);
+            if (!transicionGenerada.equals("")) {
+                transicionesGenerados.add(transicionGenerada);
+            }
+        }
+        return transicionesGenerados;
     }
     
     // REPORTE ARBOLES - PNG, TXT
-    public void reporteGraficaArbol(Arbol arbol, String pathArboles){
+    private String reporteGraficaArbol(Arbol arbol, String pathArboles){
         System.out.println("");
         System.out.println("Arbol"+arbol.getNombre());
             
         String nombreTxt = arbol.getNombre() + ".txt";
         String nombrePng = arbol.getNombre() + ".png";
         String graficaArbol = arbol.realizarGrafica();
-            
+       
             
         // Creamos el archivo .txt para cada arbol
         // Creamos el png con ese archivo txt
@@ -193,16 +233,17 @@ public class Reportes {
             java.lang.Runtime rt = Runtime.getRuntime();
             rt.exec(cmd);
             System.out.println("Se creo el archivo de arbol: " + nombrePng + ", " + nombreTxt);
+            return nombrePng;
                 
         } catch (Exception e) {
                 System.out.println("Error al crear la imagen de Graphviz - Arbol :"+ nombrePng);
         }
-            
         System.out.println("");
+        return "";
     }
     
     // REPORTE SIGIENTES - PNG, TXT
-    public void reporteGraficaSiguientes(Arbol arbol, String pathSiguientes){
+    private String reporteGraficaSiguientes(Arbol arbol, String pathSiguientes){
         System.out.println("");
         System.out.println("Siguientes -" + arbol.getNombre());
             
@@ -225,16 +266,18 @@ public class Reportes {
             java.lang.Runtime rt = Runtime.getRuntime();
             rt.exec(cmd);
             System.out.println("Se creo el archivo de siguientes: " + nombrePng + ", " + nombreTxt);
+            return nombrePng;
                 
         } catch (Exception e) {
                 System.out.println("Error al crear la imagen de Graphviz - Siguientes: "+ nombrePng);
         }
             
         System.out.println("");
+        return "";
     }
     
     // REPORTE TRANSICIONES - PNG, TXT
-    public void reporteGraficaTransiciones(Arbol arbol, String pathTransiciones){
+    private String reporteGraficaTransiciones(Arbol arbol, String pathTransiciones){
         System.out.println("");
         System.out.println("Transiciones -" + arbol.getNombre());
             
@@ -257,16 +300,31 @@ public class Reportes {
             java.lang.Runtime rt = Runtime.getRuntime();
             rt.exec(cmd);
             System.out.println("Se creo el archivo de Transiciones: " + nombrePng + ", " + nombreTxt);
+            return nombrePng;
                 
         } catch (Exception e) {
                 System.out.println("Error al crear la imagen de Graphviz - Transiciones: "+ nombrePng);
         }
             
         System.out.println("");
+        return "";
     }
     
+    // REPORTE AUTOMATAS
+    public ArrayList<String> reportesGraficaAFD(ArrayList<Arbol> listaArboles){
+        ArrayList <String> afdGenerados = new ArrayList<>();
+        String pathAFDs = this.verificarExistenciaPath("AFD_201807316", false);
+        for (Arbol arbol : listaArboles) {
+            String afdGenerado = this.reporteGraficaAFD(arbol, pathAFDs);
+            if (!afdGenerado.equals("")) {
+                afdGenerados.add(afdGenerado);
+            }
+        }
+        System.out.println("Reporte AFDs Realizado");
+        return afdGenerados;
+    }
     // REPORTE AFD - PNG, TXT
-    public void reporteGraficaAFD(Arbol arbol, String pathAfd){
+    private String reporteGraficaAFD(Arbol arbol, String pathAfd){
         System.out.println("");
         System.out.println("AFD -" + arbol.getNombre());
             
@@ -289,11 +347,13 @@ public class Reportes {
             java.lang.Runtime rt = Runtime.getRuntime();
             rt.exec(cmd);
             System.out.println("Se creo el archivo de AFD: " + nombrePng + ", " + nombreTxt);
+            return nombrePng;
                 
         } catch (Exception e) {
                 System.out.println("Error al crear la imagen de Graphviz - AFD: "+ nombrePng);
         }
-            
+        
         System.out.println("");
+        return "";
     }
 }
