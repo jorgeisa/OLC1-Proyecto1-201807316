@@ -1,0 +1,5 @@
+
+
+Digraph F{
+node[shape="record"];
+nodo8000[label="{Nodo|1|2|3|4|5}|{{Siguientes}|{2,3,4,5}|{2,3,4,5}|{2,3,4,5}|{2,3,4,5}|}"];}

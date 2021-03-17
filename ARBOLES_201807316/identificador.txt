@@ -1,0 +1,22 @@
+digraph G{
+node[shape="record"];
+nodo9004[label="{N|1}|.\n|{{0}|{5}}"];
+nodo9003[label="{N|1}|.\n|{{0}|{1,2,3,4}}"];
+nodo1[label="{N|1}|abecedarioMinus\n|{{1}|{1}}"];
+nodo9002[label="{A|2,3,4}|*\n|{{0}|{2,3,4}}"];
+nodo9001[label="{N|2,3,4}|\|\n|{{0}|{2,3,4}}"];
+nodo2[label="{N|2}|_\n|{{2}|{2}}"];
+nodo9000[label="{N|3,4}|\|\n|{{0}|{3,4}}"];
+nodo3[label="{N|3}|abecedarioMinus\n|{{3}|{3}}"];
+nodo4[label="{N|4}|digito\n|{{4}|{4}}"];
+nodo5[label="{N|5}|º\n|{{5}|{5}}"];
+nodo9004->nodo5;
+nodo9004->nodo9003;
+nodo9003->nodo9002;
+nodo9003->nodo1;
+nodo9002->nodo9001;
+nodo9001->nodo9000;
+nodo9001->nodo2;
+nodo9000->nodo4;
+nodo9000->nodo3;
+}
